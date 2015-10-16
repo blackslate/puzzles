@@ -8,6 +8,7 @@
       padding:0;
       overflow:hidden;
       height: 100%;
+      background:#000;
     }
     svg {
       position:fixed;
@@ -84,7 +85,7 @@
 </head>
 
 <body>
-<svg viewPort="0 0 495 495" version="1.1"
+<svg viewbox="0 0 495 495" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -156,25 +157,32 @@
 var body = document.body
 var svgNS = "http://www.w3.org/2000/svg"
 var xlinkNS = "http://www.w3.org/1999/xlink"
+var svg = document.querySelector("svg"); 
 var g = document.querySelector("svg>g")
 var open = -1
 var doors = []
-var locked = [] //7,8,9,10,11,12,13,14] // ,15]
+var locked = [7,8,9,10,11,12,13,14,15]
 
 ;(function (){
   var collection = document.querySelectorAll("svg>g>use")
+  var ratio = getSVGRatio()
+  var gRect = g.getBoundingClientRect()
   var rect
+    , left
+    , top
     , lock
 
   for (var ii = 0, door; door = collection[ii]; ii += 1) {
     doors.push(door)
     if (locked.indexOf(ii) > -1) {
       rect = door.getBoundingClientRect()
+      left = String((rect.left - gRect.left) / ratio)
+      top = String((rect.top - gRect.top) / ratio)
 
       lock = document.createElementNS(svgNS,"use")
       lock.setAttributeNS(xlinkNS,"xlink:href", "#lock")
-      lock.setAttributeNS(null,"x", String(rect.left))
-      lock.setAttributeNS(null,"y", String(rect.top))
+      lock.setAttributeNS(null,"x", left)
+      lock.setAttributeNS(null,"y", top)
       lock.setAttributeNS(null,"class", door.classList[0])
  
       g.appendChild(lock)
@@ -202,7 +210,9 @@ function openDoor(event) {
     if (index === open) {
       enterRoom(target)
     } else {
-      (doors[open]) ? doors[open].setAttributeNS(xlinkNS, "xlink:href", "#shut") : null
+      (doors[open]) 
+        ? doors[open].setAttributeNS(xlinkNS, "xlink:href", "#shut")
+        : null
       target.setAttributeNS(xlinkNS, "xlink:href", "#open")
       open = index
     }
@@ -210,15 +220,17 @@ function openDoor(event) {
 }
 
 function enterRoom(target) {
+  var ratio = getSVGRatio()
   var scale = 1
-  var scaleFactor = 1.1
-  var rect = target.getBoundingClientRect()
+  var scaleFactor = 1.1 // zooms to over 100x in 49, 300x in 60 frames
+  var gRect = g.getBoundingClientRect()
+  var rect = target.getBoundingClientRect() 
 
   // Scale from centre.
-  var adjustX = rect.width / 2
-  var adjustY = rect.height / 2
-  var centreX = (rect.left + adjustX)
-  var centreY = (rect.top + adjustY)
+  var adjustX = rect.width / (2 * ratio)
+  var adjustY = rect.height / (2 * ratio)
+  var centreX = (rect.left - gRect.left) / ratio + adjustX
+  var centreY = (rect.top - gRect.top) / ratio + adjustY
   var start = + new Date()
 
   var left
@@ -240,11 +252,22 @@ function enterRoom(target) {
     transform += "scale(" + scale + ")"
     target.setAttributeNS(null, "transform", transform)
     
-    if ((+ new Date() - start) < 2000) {
+    if ((+ new Date() - start) < 1000) {
       setTimeout(zoom, 16)
     }
   })()
 
+}
+
+function getSVGRatio() {
+  var rect = svg.getBoundingClientRect()
+  var box = svg.viewBox.animVal
+
+  var widthRatio = rect.width / box.width
+  var heightRatio = rect.height / box.height
+  var ratio = Math.min(widthRatio, heightRatio)
+
+  return ratio
 }
 })()
 </script>
