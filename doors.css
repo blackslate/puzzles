@@ -1,0 +1,78 @@
+html, body {
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  height: 100%;
+  background:#000;
+}
+svg {
+  position:fixed;
+  top:0;
+  height:100%;
+  left:0;
+  width:100%;
+}
+use.rrr {
+  fill:#e88;
+  color: #933;
+}
+use.rry {
+  fill: #ea8;
+  color: #953;
+}
+use.ryy {
+  fill:#ec8;
+  color:#973;
+}
+use.yyy {
+  fill:#ee8;
+  color:#993;
+}
+use.yg {
+  fill:#be8;
+  color:#693;
+}
+use.gg {
+  fill:#8e8;
+  color:#393;
+}
+use.gc {
+  fill:#8eb;
+  color:#396;
+}
+use.ccc {
+  fill:#8ee;
+  color:#399;
+}
+use.ccb {
+  fill:#8ce;
+  color:#379;
+}
+use.cbb {
+  fill:#8ae;
+  color:#359;
+}
+use.bbb {
+  fill:#88e;
+  color:#339;
+}
+use.bbm {
+  fill:#a8e;
+  color:#539;
+}
+use.bmm {
+  fill:#c8e;
+  color:#739;
+}
+use.mmm {
+  fill:#e8e;
+  color:#939;
+}
+use.mmr {
+  fill:#e8c;
+  color:#937;
+}
+use.mrr {
+  fill:#e8a;
+  color:#935;
+}
