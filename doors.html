@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Puzzle n° 10</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+    }
+    main {
+      position:relative;
+      width: 495px;
+      margin: 0 auto;
+    }
+    use.rrr {
+      fill:#e88;
+      color: #933;
+    }
+    use.rry {
+      fill: #ea8;
+      color: #953;
+    }
+    use.ryy {
+      fill:#ec8;
+      color:#973;
+    }
+    use.yyy {
+      fill:#ee8;
+      color:#993;
+    }
+    use.yg {
+      fill:#be8;
+      color:#693;
+    }
+    use.gg {
+      fill:#8e8;
+      color:#393;
+    }
+    use.gc {
+      fill:#8eb;
+      color:#396;
+    }
+    use.ccc {
+      fill:#8ee;
+      color:#399;
+    }
+    use.ccb {
+      fill:#8ce;
+      color:#379;
+    }
+    use.cbb {
+      fill:#8ae;
+      color:#359;
+    }
+    use.bbb {
+      fill:#88e;
+      color:#339;
+    }
+    use.bbm {
+      fill:#a8e;
+      color:#539;
+    }
+    use.bmm {
+      fill:#c8e;
+      color:#739;
+    }
+    use.mmm {
+      fill:#e8e;
+      color:#939;
+    }
+    use.mmr {
+      fill:#e8c;
+      color:#937;
+    }
+    use.mrr {
+      fill:#e8a;
+      color:#935;
+    }
+  </style> 
+</head>
+
+<body>
+<main>
+<svg width="495" height="495" 
+     viewPort="0 0 495 495" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<defs>
+  <g id="wall">   
+    <rect
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8"/>
+  </g>
+
+  <g id="shut">
+    <use xlink:href="#wall"/>
+    <polygon id="door"
+      points="
+  30,120
+  90,120
+  90,20
+  30,20"
+      fill="currentColor">
+    </polygon>
+  </g>
+
+  <g id="open">
+    <use xlink:href="#wall"/>
+    <polygon
+      points="
+100,120
+90,120
+90,20
+100,10"
+      fill="currentColor">
+    </polygon>
+  </g>
+
+  <path id="lock" d="m179 421h285v108q0 59-42 101t-101 41-101-41-41-101v-108z m464-53v-322q0-22-16-37t-38-16h-535q-23 0-38 16t-16 37v322q0 22 16 38t38 15h17v108q0 102 74 176t176 74 177-74 73-176v-108h18q23 0 38-15t16-38z" horiz-adv-x="642.9" transform="translate(45 85) scale(0.02) rotate(180)" />
+</defs> 
+
+  <use x="0"   y="0" xlink:href="#shut" class="rrr"/>
+  <use x="125" y="0" xlink:href="#shut" class="rry"/>
+  <use x="250" y="0" xlink:href="#shut" class="ryy"/>
+  <use x="375" y="0" xlink:href="#shut" class="yyy"/>
+
+  <use x="0"   y="125" xlink:href="#shut" class="yg"/>
+  <use x="125" y="125" xlink:href="#shut" class="gg"/>
+  <use x="250" y="125" xlink:href="#shut" class="gc"/>
+  <use x="375" y="125" xlink:href="#shut" class="ccc"/>
+
+  <use x="0"   y="250" xlink:href="#shut" class="ccb"/>
+  <use x="125" y="250" xlink:href="#shut" class="cbb"/>
+  <use x="250" y="250" xlink:href="#shut" class="bbb"/>
+  <use x="375" y="250" xlink:href="#shut" class="bbm"/>
+
+  <use x="0"   y="375" xlink:href="#shut" class="bmm"/>
+  <use x="125" y="375" xlink:href="#shut" class="mmm"/>
+  <use x="250" y="375" xlink:href="#shut" class="mmr"/>
+  <use x="375" y="375" xlink:href="#shut" class="mrr"/>
+
+</svg>
+</main>
+<script>
+;(function () {
+var body = document.body
+var svgNS = "http://www.w3.org/2000/svg"
+var xlinkNS = "http://www.w3.org/1999/xlink"
+var svg = document.querySelector("svg")
+var main = document.querySelector("main")
+var left = main.getBoundingClientRect().left
+var open = -1
+var doors = []
+var locked = [7,8,9,10,11,12,13,14] // ,15]
+
+;(function (){
+  var collection = document.querySelectorAll("svg>use")
+  var rect
+    , lock
+
+  for (var ii = 0, door; door = collection[ii]; ii += 1) {
+    doors.push(door)
+    if (locked.indexOf(ii) > -1) {
+      rect = door.getBoundingClientRect()
+
+      lock = document.createElementNS(svgNS,"use")
+      lock.setAttributeNS(xlinkNS,"xlink:href", "#lock")
+      lock.setAttributeNS(null,"x", String(rect.left - left))
+      lock.setAttributeNS(null,"y", String(rect.top))
+      lock.setAttributeNS(null,"class", door.classList[0])
+ 
+      svg.appendChild(lock)
+    }
+  }
+})()
+
+body.onmouseup = body.ontouchend = openDoor
+
+function openDoor(event) {
+  var target = event.target
+  var index
+
+  while (target.parentNode
+     && target.parentNode.nodeName.toLowerCase() !== "svg") {
+    target = target.parentNode
+  }
+
+  if (!target) {
+    return
+  }
+
+  index = doors.indexOf(target)
+  if (locked.indexOf(index) < 0) {
+    if (index === open) {
+      enterRoom(target)
+    } else {
+      (doors[open]) ? doors[open].setAttributeNS(xlinkNS, "xlink:href", "#shut") : null
+      target.setAttributeNS(xlinkNS, "xlink:href", "#open")
+      open = index
+    }
+  }
+}
+
+function enterRoom(target) {
+  var scale = 125/30
+  var mainRect = main.getBoundingClientRect()
+  var rect = target.getBoundingClientRect()
+  var left = (mainRect.left - rect.left) * scale
+  var top = (mainRect.top - rect.top) * scale
+  var transform = "translate(" + left + " " + top + ") "
+  transform += "scale(" + scale + ")"
+
+  svg.removeChild(target)
+  svg.appendChild(target)
+  target.setAttributeNS(null, "transform", transform)
+}
+})()
+</script>
+</body>
+</html>
