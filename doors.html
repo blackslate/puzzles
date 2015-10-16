@@ -3,14 +3,18 @@
 <head>
   <title>Puzzle n° 10</title>
   <style>
-    body {
-      background-color: #000;
-      color: #fff;
+    html, body {
+      margin:0;
+      padding:0;
+      overflow:hidden;
+      height: 100%;
     }
-    main {
-      position:relative;
-      width: 495px;
-      margin: 0 auto;
+    svg {
+      position:fixed;
+      top:0;
+      height:100%;
+      left:0;
+      width:100%;
     }
     use.rrr {
       fill:#e88;
@@ -80,9 +84,7 @@
 </head>
 
 <body>
-<main>
-<svg width="495" height="495" 
-     viewPort="0 0 495 495" version="1.1"
+<svg viewPort="0 0 495 495" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -127,6 +129,7 @@
   <path id="lock" d="m179 421h285v108q0 59-42 101t-101 41-101-41-41-101v-108z m464-53v-322q0-22-16-37t-38-16h-535q-23 0-38 16t-16 37v322q0 22 16 38t38 15h17v108q0 102 74 176t176 74 177-74 73-176v-108h18q23 0 38-15t16-38z" horiz-adv-x="642.9" transform="translate(45 85) scale(0.02) rotate(180)" />
 </defs> 
 
+<g>
   <use x="0"   y="0" xlink:href="#shut" class="rrr"/>
   <use x="125" y="0" xlink:href="#shut" class="rry"/>
   <use x="250" y="0" xlink:href="#shut" class="ryy"/>
@@ -146,23 +149,20 @@
   <use x="125" y="375" xlink:href="#shut" class="mmm"/>
   <use x="250" y="375" xlink:href="#shut" class="mmr"/>
   <use x="375" y="375" xlink:href="#shut" class="mrr"/>
-
+</g>
 </svg>
-</main>
 <script>
 ;(function () {
 var body = document.body
 var svgNS = "http://www.w3.org/2000/svg"
 var xlinkNS = "http://www.w3.org/1999/xlink"
-var svg = document.querySelector("svg")
-var main = document.querySelector("main")
-var left = main.getBoundingClientRect().left
+var g = document.querySelector("svg>g")
 var open = -1
 var doors = []
-var locked = [7,8,9,10,11,12,13,14] // ,15]
+var locked = [] //7,8,9,10,11,12,13,14] // ,15]
 
 ;(function (){
-  var collection = document.querySelectorAll("svg>use")
+  var collection = document.querySelectorAll("svg>g>use")
   var rect
     , lock
 
@@ -173,11 +173,11 @@ var locked = [7,8,9,10,11,12,13,14] // ,15]
 
       lock = document.createElementNS(svgNS,"use")
       lock.setAttributeNS(xlinkNS,"xlink:href", "#lock")
-      lock.setAttributeNS(null,"x", String(rect.left - left))
+      lock.setAttributeNS(null,"x", String(rect.left))
       lock.setAttributeNS(null,"y", String(rect.top))
       lock.setAttributeNS(null,"class", door.classList[0])
  
-      svg.appendChild(lock)
+      g.appendChild(lock)
     }
   }
 })()
@@ -189,7 +189,7 @@ function openDoor(event) {
   var index
 
   while (target.parentNode
-     && target.parentNode.nodeName.toLowerCase() !== "svg") {
+     && target.parentNode.nodeName.toLowerCase() !== "g") {
     target = target.parentNode
   }
 
@@ -210,17 +210,41 @@ function openDoor(event) {
 }
 
 function enterRoom(target) {
-  var scale = 125/30
-  var mainRect = main.getBoundingClientRect()
+  var scale = 1
+  var scaleFactor = 1.1
   var rect = target.getBoundingClientRect()
-  var left = (mainRect.left - rect.left) * scale
-  var top = (mainRect.top - rect.top) * scale
-  var transform = "translate(" + left + " " + top + ") "
-  transform += "scale(" + scale + ")"
 
-  svg.removeChild(target)
-  svg.appendChild(target)
-  target.setAttributeNS(null, "transform", transform)
+  // Scale from centre.
+  var adjustX = rect.width / 2
+  var adjustY = rect.height / 2
+  var centreX = (rect.left + adjustX)
+  var centreY = (rect.top + adjustY)
+  var start = + new Date()
+
+  var left
+    , top
+    , transform
+
+  g.removeChild(target)
+  target.setAttributeNS(null, "x", "0")
+  target.setAttributeNS(null, "y", "0")
+  g.appendChild(target)
+
+
+  ;(function zoom(){
+    scale *= scaleFactor
+    left = centreX - adjustX * scale
+    top = centreY - adjustY * scale
+
+    transform = "translate(" + left + " " + top + ") "
+    transform += "scale(" + scale + ")"
+    target.setAttributeNS(null, "transform", transform)
+    
+    if ((+ new Date() - start) < 2000) {
+      setTimeout(zoom, 16)
+    }
+  })()
+
 }
 })()
 </script>
