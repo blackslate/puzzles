@@ -1,6 +1,7 @@
 
 ;(function () {
   var body = document.body
+  var $main = $("main")
   var svgNS = "http://www.w3.org/2000/svg"
   var xlinkNS = "http://www.w3.org/1999/xlink"
   var svg = document.querySelector("svg"); 
@@ -87,6 +88,9 @@
       , top
       , transform
 
+    // Get the puzzle from the site
+    loadPuzzle(target.getAttribute("data-hash"))
+
     // Stop tracking the user's input for this activity
     body.onmouseup = body.ontouchend = null
 
@@ -94,8 +98,6 @@
     target.setAttributeNS(null, "x", "0")
     target.setAttributeNS(null, "y", "0")
     g.appendChild(target)
-
-    loadPuzzle(target.getAttribute("data-hash"))
 
     ;(function zoom(){
       scale *= scaleFactor
@@ -126,7 +128,14 @@
   }
 
   function loadPuzzle(hash) {
+    // hash is "#puzzlename"
     // GET AJAX AND CALL preparePuzzle() ON SUCCESS
+    var result = "puzzles/" + hash.substring(1) + ".html"
+    $main.load( result, done);
+
+    function done() {
+      preparePuzzle()
+    }
   }
 
   function preparePuzzle(hash) {
@@ -140,6 +149,6 @@
   }
 
   function startPuzzle() {
-
+    $main.removeClass("hidden")
   }
 })()

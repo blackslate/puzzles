@@ -1,4 +1,5 @@
-;(function (){
+;(function (window){
+  // var lx = window.lx =
   var $section = $("section")
 
   $("a").click(getAjaxPage)
@@ -31,4 +32,4 @@
     //   console.log(data)
     // }
   }
-})()
+})(window)

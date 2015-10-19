@@ -76,3 +76,18 @@ use.mrr {
   fill:#e8a;
   color:#935;
 }
+
+main {
+ position:absolute;
+ width:100vmin;
+ height:100vmin;
+ left:50%;
+ top:50%;
+ margin-left:-50vmin;
+ margin-top:-50vmin;
+ background-color:#000;
+ color:#fff;
+}
+main.hidden {
+  display:none;
+}

@@ -1,18 +1,28 @@
 <style>
-section {
-  margin:0;
-  background-color: blue;
+main svg {
+ position:absolute;
+ width:100%;
+ height:100%;
+ background-color:#1B2F1B;
 }
 </style>
 
 <svg viewBox="0 0 1300 1300" version="1.1"
-  xmlns="http://www.w3.org/2000/svg" style="width:120:vmin;height:80vmin">
-</svg>
+  xmlns="http://www.w3.org/2000/svg">
+ <!--  <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="0">
+    <stop id="stop" offset="0%" stop-color="#1B2F1B"/>
+    <stop offset="90%" stop-color="#fff"/>
+  </linearGradient>
+  <rect x="650" y="0" width="650" height="650" fill="url(#gradient)" />--> 
+   <circle cx="650" cy="650" r="650" fill="#fff" />
+   <rect x="0" y="0" width="600" height="100" fill="#1B2F1B" transform="translate(600 600) rotate(-18 50 50) translate(400 0)"/>
+ </svg>
 
 <script>
 ;(function () {
   var body = document.body
-  var svg = document.querySelector("svg")
+  var main = document.querySelector("main")
+  var svg = document.querySelector("main svg")
   var svgNS = "http://www.w3.org/2000/svg"
   var xlinkNS = "http://www.w3.org/1999/xlink"
 
@@ -24,7 +34,6 @@ section {
   var cY = 650
   var width = 100
   var radius = width / 2
-
 
   // Rotation properties
   var rect = svg.getBoundingClientRect()
@@ -302,6 +311,11 @@ section {
     if (!free[index]) {
       return
     }
+
+    rect = svg.getBoundingClientRect()
+    pX = rect.left + rect.width / 2
+    pY = rect.top + rect.height / 2
+    scale = cX / pX
  
     var turnBallWithRing = (barPoints[0].ring === index)
     var deltaX = event.pageX - pX
@@ -538,9 +552,9 @@ section {
   }
 
   function showDone() {
-    var green = "#cfc"
+    var green = "#232"
     svg.onmousedown = svg.ontouchdown = null
-    body.style.background = green
+    main.style.background = green
 
     dials.forEach(function(path) {
       if (path) {
@@ -548,12 +562,13 @@ section {
         path.setAttributeNS(null,"style","fill:"+green)
       }
     })
-    dials.pop().setAttributeNS(null,"style","fill:#bfb")
+    dials.pop().setAttributeNS(null,"style","fill:"+green)
 
     bars.forEach(function(bar) {
       bar.setAttributeNS(null,"style","fill:"+green)
     })
     bars[0].setAttributeNS(null,"style","fill:#090")
+    document.querySelector("main svg circle").setAttributeNS(null,"style","fill:"+green)
   }
 })()
 </script>
