@@ -1,47 +1,122 @@
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title></title>
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
-  <meta name="viewport" content="width=device-width">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Puzzle</title>
+  <link rel="stylesheet" type="text/css" href="css/doors.css">
+  <script src="//code.jquery.com/jquery-2.1.4.js"></script>
 </head>
 
 <body>
-  <div class="sidebar">
-    <div class="logo">
-      <a href="#home"><img src="" alt="Home"/></a>
-    </div>
+<svg
+  viewbox="0 0 370 370" version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
 
-    <nav>
-      <a href="#home">Home</a>
-      <ul>
-        <li><a href="#fractal">Fractaliphant</a></li>
-        <li><a href="#keywords">Keywords</a></li>
-        <li><a href="#passcode">Pass code</a></li>
-        <li><a href="#missing">Who's missing?</a></li>
-        <li><a href="#colours">Colour blindness</a></li>
-        <li><a href="#dials">Dials</a></li>
-        <li><a href="#jigsaw">Jigsaw</a></li>
-      </ul>
-    </nav>
-  </div>
+  <defs>
+    <g id="wall">   
+      <rect
+        width="120"
+        height="120"/>
+      <rect
+        x="30"
+        y="20"
+        width="60"
+        height="100"
+        fill="#000"
+        opacity="0.8"/>
+    </g>
 
-  <main>
-    <header>
-      <h1>Puzzle</h1>
-      <a href="#home" class="btn">Keep your brain alert</a>
-    </header>
+    <g id="shut">
+      <use xlink:href="#wall"/>
+      <polygon id="door"
+        points="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="currentColor">
+      </polygon>
+    </g>
 
-    <article>
-      <section>
-        <h2><a id="home" class="anchor" href="#hash" aria-hidden="true"></a>Today's Puzzle</h2>
-      <p></p>
-      </section>
-    </article>
-  </main>
+    <g id="open">
+      <use xlink:href="#wall"/>
+      <polygon
+        points="
+          100,120
+          90,120
+          90,20
+          100,10"
+        fill="currentColor">
+      </polygon>
+    </g>
 
-  <script src="//code.jquery.com/jquery-2.1.4.js"></script>
-  <script src="js/ajax.js"></script>
+    <path
+      id="lock"
+      d="m179 421h285v108q0 59-42 101t-101 41-101-41-41-101v-108z m464-53v-322q0-22-16-37t-38-16h-535q-23 0-38 16t-16 37v322q0 22 16 38t38 15h17v108q0 102 74 176t176 74 177-74 73-176v-108h18q23 0 38-15t16-38z"
+      transform="translate(45 85) scale(0.02) rotate(180)" />
+ 
+    <path
+      id="back"
+      d="m653 682l-296-296 296-297q11-10 11-25t-11-25l-92-93q-11-10-25-10t-25 10l-414 415q-11 10-11 25t11 25l414 414q10 10 25 10t25-10l92-93q11-10 11-25t-11-25z"
+      transform="translate(2 2) scale(0.02)"
+      fill="#fff" />
+    <path
+      id="reset"
+      d="m857 350q0-87-34-166t-91-137-137-92-166-34q-96 0-183 41t-147 114q-4 6-4 13t5 11l76 77q6 5 14 5 9-1 13-7 41-53 100-82t126-29q58 0 110 23t92 61 61 91 22 111-22 111-61 91-92 61-110 23q-55 0-105-20t-90-57l77-77q17-16 8-38-10-23-33-23h-250q-15 0-25 11t-11 25v250q0 24 22 33 22 10 39-8l72-72q60 57 137 88t159 31q87 0 166-34t137-92 91-137 34-166z"
+      transform="translate(1.5 3.1) scale(0.02)"
+      fill="#fff"  />
+  </defs>
+
+  <g>
+    <use x="0"   y="0" xlink:href="#shut" class="rrr"
+         data-hash="#button"/>
+    <use x="125" y="0" xlink:href="#shut" class="rry"
+         data-hash="#window"/>
+    <use x="250" y="0" xlink:href="#shut" class="ryy"
+         data-hash="#jigsaw"/>
+
+    <use x="0"   y="125" xlink:href="#shut" class="yg"
+         data-hash="#maze"/>
+    <use x="125" y="125" xlink:href="#shut" class="gg"
+         data-hash="#spot"/>
+    <use x="250" y="125" xlink:href="#shut" class="gc"
+         data-hash="#fractaliphant"/>
+
+    <use x="0"   y="250" xlink:href="#shut" class="ccb"
+         data-hash="#dials"/>
+    <use x="125" y="250" xlink:href="#shut" class="cbb"
+         data-hash="#missing"/>
+    <use x="250" y="250" xlink:href="#shut" class="bbb"
+         data-hash="#trust"/>
+
+         
+    <image xlink:href="puzzles/button/icon.png" x="40" y="80" height="40px" width="40px"/>
+    <image xlink:href="puzzles/window/icon.png" x="165" y="80" height="40px" width="40px"/>
+    <image xlink:href="puzzles/jigsaw/icon.png" x="290" y="80" height="40px" width="40px"/>
+         
+    <image xlink:href="puzzles/maze/icon.png" x="40" y="205" height="40px" width="40px"/>
+    <image xlink:href="puzzles/spot/icon.png" x="165" y="205" height="40px" width="40px"/>
+    <image xlink:href="puzzles/fractaliphant/icon.png" x="290" y="205" height="40px" width="40px"/>
+         
+    <image xlink:href="puzzles/dials/icon.png" x="40" y="330" height="40px" width="40px"/>
+    <image xlink:href="puzzles/missing/icon.png" x="165" y="330" height="40px" width="40px"/>
+    <image xlink:href="puzzles/trust/icon.png" x="290" y="330" height="40px" width="40px"/>
+  </g>
+</svg>
+
+<section  class="hidden">
+  <article></article>
+
+  <nav>
+    <a href="index.html">
+      <svg viewbox="0 0 20 20"><use xlink:href="#back"/></svg>
+    </a>
+    <a href="#reset">
+      <svg viewbox="0 0 20 20"><use xlink:href="#reset"/></svg>
+    </a>
+  </nav>
+</section>
+
+<script src="js/doors.js"></script>
 </body>
 </html>

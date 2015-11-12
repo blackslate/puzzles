@@ -1,19 +1,14 @@
-<style>
-main svg {
- position:absolute;
- width:100%;
- height:100%;
- background-color:#1B2F1B;
-}
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <title>Dials</title> 
 </style>
+</head>
 
-<svg viewBox="0 0 1300 1300" version="1.1"
+<body>
+<svg class="puzzle" viewbox="0 0 1300 1300" version="1.1"
   xmlns="http://www.w3.org/2000/svg">
- <!--  <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="0">
-    <stop id="stop" offset="0%" stop-color="#1B2F1B"/>
-    <stop offset="90%" stop-color="#fff"/>
-  </linearGradient>
-  <rect x="650" y="0" width="650" height="650" fill="url(#gradient)" />--> 
    <circle cx="650" cy="650" r="650" fill="#fff" />
    <rect x="0" y="0" width="600" height="100" fill="#1B2F1B" transform="translate(600 600) rotate(-18 50 50) translate(400 0)"/>
  </svg>
@@ -21,8 +16,9 @@ main svg {
 <script>
 ;(function () {
   var body = document.body
-  var main = document.querySelector("main")
-  var svg = document.querySelector("main svg")
+  var svg = document.querySelector("svg.puzzle")
+  var main = svg.parentNode
+
   var svgNS = "http://www.w3.org/2000/svg"
   var xlinkNS = "http://www.w3.org/1999/xlink"
 
@@ -35,11 +31,11 @@ main svg {
   var width = 100
   var radius = width / 2
 
-  // Rotation properties
-  var rect = svg.getBoundingClientRect()
-  var pX = rect.left + rect.width / 2
-  var pY = rect.top + rect.height / 2
-  var scale = cX / pX
+  // Rotation properties 
+  var pX // centre of page
+  var pY
+  var scale
+
   // Start dials and rotations with central point
   var dials = [0]
   var rotations = [0]
@@ -296,6 +292,7 @@ main svg {
     
   function startDrag(event) {
     var target = event.target
+    setScale()
 
     if (target.classList.contains("rotate")) {
       return startRotate(event, target)
@@ -568,7 +565,16 @@ main svg {
       bar.setAttributeNS(null,"style","fill:"+green)
     })
     bars[0].setAttributeNS(null,"style","fill:#090")
-    document.querySelector("main svg circle").setAttributeNS(null,"style","fill:"+green)
+    document.querySelector("svg.puzzle circle").setAttributeNS(null,"style","fill:"+green)
+  }
+
+  function setScale() {
+    var rect = svg.getBoundingClientRect()
+    pX = rect.left + rect.width / 2
+    pY = rect.top + rect.height / 2
+    scale = cX / (pX - rect.left)
+    console.log(pX, cX, scale)
   }
 })()
 </script>
+</body>

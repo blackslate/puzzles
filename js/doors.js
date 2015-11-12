@@ -1,15 +1,17 @@
 
 ;(function () {
   var body = document.body
-  var $main = $("main")
+  var $section = $("section")
+  var $article = $("article")
   var svgNS = "http://www.w3.org/2000/svg"
   var xlinkNS = "http://www.w3.org/1999/xlink"
   var svg = document.querySelector("svg"); 
   var g = document.querySelector("svg>g")
   var open = -1
   var doors = []
-  var locked = [7,8,9,10,11,12,13,14,15]
+  var locked = []
   var readyToPlay = false
+  var current // will become data-hash
 
   ;(function initializeDoors(){
     var collection = document.querySelectorAll("svg>g>use")
@@ -38,6 +40,15 @@
    
         g.appendChild(lock)
       }
+    }
+  })()
+
+  ;(function prepareReset(){
+    var reset = document.querySelector("a[href='#reset']")
+
+    reset.onclick = function reset (event) {
+      event.preventDefault()
+      loadPuzzle(current)
     }
   })()
 
@@ -89,7 +100,8 @@
       , transform
 
     // Get the puzzle from the site
-    loadPuzzle(target.getAttribute("data-hash"))
+    current = target.getAttribute("data-hash")
+    loadPuzzle(current)
 
     // Stop tracking the user's input for this activity
     body.onmouseup = body.ontouchend = null
@@ -131,7 +143,7 @@
     // hash is "#puzzlename"
     // GET AJAX AND CALL preparePuzzle() ON SUCCESS
     var result = "puzzles/" + hash.substring(1) + ".html"
-    $main.load( result, done);
+    $article.load( result, done);
 
     function done() {
       preparePuzzle()
@@ -149,6 +161,6 @@
   }
 
   function startPuzzle() {
-    $main.removeClass("hidden")
+    $section.removeClass("hidden")
   }
 })()

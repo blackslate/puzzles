@@ -1,3 +1,591 @@
-<h2>Jigsaw
-</h2>
-<p>Success!</p>
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <title>Puzzle n° 17</title>
+<style>
+html {
+  height: 100%;
+}
+body {
+  background-color: #ccc;
+  margin: 0;
+  height: 100%;
+}
+div {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+}
+div:not(.complete) img{
+  -webkit-filter: drop-shadow(1px 1px 1px #333);
+  filter:         drop-shadow(1px 1px 1px rgb(51,51,51,0.5));
+}
+img {
+  position: absolute;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  top:0;
+  left:0;
+  -webkit-transform: translateZ(0);
+}
+</style>  
+</head>
+<body>
+<div></div>
+<script>
+;(function (){
+  var body = document.body
+  var div = document.querySelector("div")
+
+  var rowCount = 5
+  var colCount = 5
+  var pieceCount = rowCount * colCount
+  var edgeList = [] // Ensures that no two edges are identical
+  var topsList = [] // Ensures that pieces fit with the row above
+  var piecesList = []
+  var blankList = []
+  var imageList = []
+  var groups = {}
+  var layer = 1
+  var threshold = 400
+  var complete = false
+  var stillLoading = 2
+ 
+  var width
+  var height
+  var neck
+
+  var white = new Image()
+  var source = new Image()
+
+  white.onload = source.onload = function checkIfBothAreLoaded() {
+    stillLoading -= 1
+    if (!stillLoading) {
+      createPuzzle()
+    }
+  }
+
+  function createPuzzle() {
+    var imgWidth = white.width
+    var imgHeight = white.height
+    width = imgWidth / colCount
+    height = imgHeight / rowCount
+    neck = width / 6
+
+    createPuzzlePieces()
+    setTimeout(placePiecesRandomly, 1)
+  };
+
+  function createPuzzlePieces(me) {   
+    var edge
+      
+    for(var row = 0; row < rowCount; row += 1) {
+      for(var col = 0; col < colCount; col += 1) {
+        createPuzzlePiece(row, col)
+      }
+    }
+
+    function createPuzzlePiece(row, col) {
+      var canvas = document.createElement('canvas')
+      var context = canvas.getContext('2d');
+
+      canvas.width = width + neck * 2.5
+      canvas.height = height + neck * 2.5
+
+      context.beginPath()
+      context.moveTo(neck, height + neck)
+      
+      // LEFT
+      if (!col) {
+        // The left edge is flat
+        context.lineTo(neck, neck)
+      } else {
+        // Use previous right edge
+        upwardEdge(neck, height + neck, edge)
+      }
+
+      // TOP
+      if (!row) {
+        context.lineTo(width + neck, neck)
+      } else {
+       // Use previous bottom edge
+        rightwardEdge(width + neck, neck, topsList[col])
+      }
+
+      // RIGHT
+      if ((col + 1) === colCount) {
+        context.lineTo(width + neck, height + neck)
+      } else {
+        // Create a new right edge
+        edge = randomEdge()
+        downwardEdge(width + neck, height + neck, edge)
+      }
+
+      // BOTTOM    
+      if (row + 1 === rowCount) {
+        context.lineTo(neck, height + neck)
+      } else {
+        // Create a new bottom edge       
+        topsList[col] = randomEdge()
+        leftwardEdge(width + neck, height + neck, topsList[col])
+      }
+      context.clip()
+
+      createImage()
+
+      function downwardEdge(x0, height, edge) {
+        // {
+        //   tilt: tilt
+        // , slant: slant
+        // , angle: angle
+        // , curve: curve
+        // }
+        var x1 = x0 - edge.curve     // shoulder
+        var x2 = x0 + edge.curve / 5 // chin
+        var x3 = x0 + neck * 1.2     // crown
+
+        var y0 = neck
+        var ym = y0 + (height - y0) / 2 // adjusted with tilt
+        var y1 = ym - neck / 2      // top of neck
+        var y2 = ym + neck / 2      // bottom of neck
+        var y3 = ym - neck * 2      // top of slant
+        var y4 = ym + neck * 2      // foot of slant
+
+        context.bezierCurveTo(
+          x0, y0                   // no handle on corner
+        , x1, y1 - edge.angle     // base of neck
+        , x0, y1                  // upper neck point
+        )
+        context.bezierCurveTo(
+          x2, y1 + edge.angle / 5 // chin side of neck
+        , x3 - edge.slant, y3     // upper slant
+        , x3, ym + edge.tilt      // top of head
+        )
+        context.bezierCurveTo(
+          x3 + edge.slant, y4     // lower slant
+        , x2, y2 + edge.angle / 5 // chin side of neck
+        , x0, y2                  // lower neck point
+        )
+        context.bezierCurveTo(
+          x1, y2 - edge.angle     // base of neck
+        , x0, height              // no handle on corner
+        , x0, height              // corner
+        )
+      }
+
+      function upwardEdge(x0, height, edge) {
+        var x1 = x0 - edge.curve     // shoulder
+        var x2 = x0 + edge.curve / 5 // chin
+        var x3 = x0 + neck * 1.2     // crown
+
+        var y0 = neck
+        var ym = y0 + (height - y0) / 2 // adjusted with tilt
+        var y1 = ym - neck / 2   // top of neck
+        var y2 = ym + neck / 2   // bottom of neck
+        var y3 = ym - neck * 2      // top of slant
+        var y4 = ym + neck * 2     // foot of slant
+
+        //context.lineTo(x0, neck)
+
+        context.bezierCurveTo(
+          x0, height              // no handle on corner
+        , x1, y2 - edge.angle     // base of neck
+        , x0, y2                  // upper neck point
+        )
+        context.bezierCurveTo(
+          x2, y2 + edge.angle / 5 // chin side of neck
+        , x3 + edge.slant, y4     // lower slant
+        , x3, ym + edge.tilt      // top of head
+        )
+        context.bezierCurveTo(
+          x3 - edge.slant, y3     // upper slant
+        , x2, y1 + edge.angle / 5 // chin side of neck
+        , x0, y1                  // lower neck point
+        )
+        context.bezierCurveTo(
+          x1, y1 - edge.angle     // base of neck
+        , x0, y0                   // no handle on corner
+        , x0, y0                   // corner
+        )
+      }
+   
+      function leftwardEdge(width, y0, edge) {
+        var y1 = y0 - edge.curve     // shoulder
+        var y2 = y0 + edge.curve / 5 // chin
+        var y3 = y0 + neck * 1.2     // crown
+
+        var x0 = neck
+        var xm = x0 + (width - x0) / 2 // adjusted with tilt
+        var x1 = xm - neck / 2   // top of neck
+        var x2 = xm + neck / 2   // bottom of neck
+        var x3 = xm - neck * 2      // top of slant
+        var x4 = xm + neck * 2     // foot of slant
+
+        context.bezierCurveTo(
+          width, y0              // no handle on corner
+        , x2 - edge.angle, y1     // base of neck
+        , x2, y0                  // upper neck point
+        )
+        context.bezierCurveTo(
+          x2 + edge.angle / 5, y2 // chin side of neck
+        , x4, y3 + edge.slant     // lower slant
+        , xm + edge.tilt, y3      // top of head
+        )
+        context.bezierCurveTo(
+          x3, y3 - edge.slant     // upper slant
+        , x1 + edge.angle / 5, y2 // chin side of neck
+        , x1, y0                  // lower neck point
+        )
+        context.bezierCurveTo(
+          x1 - edge.angle, y1     // base of neck
+        , x0, y0                   // no handle on corner
+        , x0, y0                  // corner
+        )
+      }
+
+      function rightwardEdge(width, y0, edge) {
+        var y1 = y0 - edge.curve     // shoulder
+        var y2 = y0 + edge.curve / 5 // chin
+        var y3 = y0 + neck * 1.2     // crown
+
+        var x0 = neck
+        var xm = x0 + (width - x0) / 2 // adjusted with tilt
+        var x1 = xm - neck / 2      // top of neck
+        var x2 = xm + neck / 2      // bottom of neck
+        var x3 = xm - neck * 2      // top of slant
+        var x4 = xm + neck * 2      // foot of slant
+
+        context.bezierCurveTo(
+          x0, y0                  // no handle on corner
+        , x1 - edge.angle, y1     // base of neck
+        , x1, y0                  // upper neck point
+        )
+        context.bezierCurveTo(
+          x1 + edge.angle / 5, y2 // chin side of neck
+        , x3, y3 - edge.slant     // lower slant
+        , xm + edge.tilt, y3      // top of head
+        )
+        context.bezierCurveTo(
+          x4, y3 + edge.slant     // upper slant
+        , x2 + edge.angle / 5, y2 // chin side of neck
+        , x2, y0                  // lower neck point
+        )
+        context.bezierCurveTo(
+          x2 - edge.angle, y1     // base of neck
+        , width, y0                  // no handle on corner
+        , width, y0               // corner
+        )
+      }
+   
+      function createImage() {
+        var blank = new Image()
+        var piece = new Image()
+        var image = new Image()
+        blankList.push(blank)
+        piecesList.push(piece)
+        imageList.push(image)
+
+        context.drawImage(white, -col*width + neck, -row*height + neck)
+
+        piece.onload = function(){
+          // append the new image to the page
+          div.appendChild(piece)
+          piece.locX = -col*width
+          piece.locY = -row*height
+          piece.id = row+"_"+col
+          groups[piece.id] = [piece]
+          
+
+          context.drawImage(source, -col*width + neck, -row*height + neck)
+
+          image.onload = function(){
+            context = null
+            canvas = null    
+            image.onload = null  
+            piece.onload = null
+            blank.onload = null 
+          }
+
+          image.src = canvas.toDataURL()
+        }
+
+        blank.src = canvas.toDataURL()
+        piece.src = canvas.toDataURL()
+      }
+    }
+  }
+
+  function randomEdge(topsList, column) {   
+    var tilt
+      , slant
+      , angle
+      , curve
+      , edge
+
+    do {
+      tilt  =  6 - Math.floor(Math.random() * 11)
+      slant =  6 - Math.floor(Math.random() * 11)
+      angle =  6 - Math.floor(Math.random() * 11)
+      curve = 14 + Math.floor(Math.random() * 11)
+    } while (edgeExists())
+
+    function edgeExists() {
+      var unique = edgeList.every(function (edge) {
+        if (edge.tilt !== tilt) {
+          return true
+        } else if (edge.slant !== slant) {
+          return true
+        } else if (edge.angle !== angle) {
+          return true
+        } else if (edge.curve !== curve) {
+          return true
+        }
+        return false
+      })
+
+      return !unique
+    }
+
+    edge  = {
+      tilt: tilt
+    , slant: slant
+    , angle: angle
+    , curve: curve
+    }
+
+    edgeList.push(edge)
+
+    if (topsList) {
+      topsList[column] = edge
+    }
+
+    return edge
+  }
+
+  function placePiecesRandomly() {
+    var width = body.offsetWidth
+    var height = body.offsetHeight
+    var ratio = width / height
+    var across
+      , down
+      , extra
+      , space
+      , random
+      , index
+      , piece
+
+    if (ratio > 2) {
+      across = 7; down = 3; extra = 4
+    } else if (ratio > 1.33) {
+      across = 6; down = 4; extra = 1
+    } else if (ratio > 0.75) {
+      across = 5; down = 5; extra = 0
+    } else if (ratio > 0.5) {
+      across = 4; down = 6; extra = 1
+    } else {
+      across = 3; down = 7; extra = 4
+    }
+
+    space = Math.min(width / (across + 2), height / (down + 2))
+    random = getRandomIndexArray()
+
+    for ( var row = 0; row < down; row += 1 ) {
+      for ( var col = 0; col < across; col += 1 ) {
+        placePiece()
+      }
+    }
+
+    for (var ii = 0; ii < extra; ii += 1) {
+      placePiece()
+    }
+
+    function placePiece() {
+      index = random.pop()
+      piece = piecesList[index]
+      piece.style.top = (row + Math.random()) * space + "px"
+      piece.style.left = (col + Math.random()) * space + "px"
+    }
+
+    function getRandomIndexArray() {
+      var array = []
+      for (var ii = 0; ii < pieceCount; ii += 1) {
+        array.push(ii)
+      }
+
+      var current = pieceCount
+        , swap
+        , random
+
+      while (current) {
+        random = Math.floor(Math.random() * current--);
+        swap = array[current];
+        array[current] = array[random];
+        array[random] = swap;
+      }
+
+      return array
+    }
+  }
+  
+  ;(function play(){
+    body.ontouchstart = function (event) {
+      event.preventDefault()
+    }
+
+    div.onmousedown = div.ontouchstart = startDrag
+      
+    function startDrag(event) {
+      event.preventDefault()
+
+      var target = event.target
+      if (target.nodeName.toLowerCase() !== "img") {
+        return
+      }
+
+      body.onmousemove = body.ontouchmove = drag
+      body.onmouseup = body.ontouchend = stopDrag
+
+      var pieces = groups[target.id]
+      var clickX = event.pageX
+      var clickY = event.pageY
+      var startXs = {}
+      var startYs = {}
+
+
+      ;(function setStartXAndY(){
+        var id
+        layer++
+        pieces.forEach(function (piece) {
+          id = piece.id
+          startXs[id] = piece.offsetLeft - clickX
+          startYs[id] = piece.offsetTop - clickY
+          piece.style.zIndex = layer
+        })
+      })()
+    
+      function drag(event) {      
+        var id
+        pieces.forEach(function (piece) {
+          id = piece.id
+          piece.style.left = startXs[id] + event.pageX + "px"
+          piece.style.top = startYs[id] + event.pageY + "px"
+        })
+      }
+    
+      function stopDrag(event) {
+        var targetRect = target.getBoundingClientRect()
+        var x = targetRect.left + target.locX
+        var y = targetRect.top + target.locY
+        var deltaX
+          , deltaY
+          , delta2
+
+        piecesList.forEach(function (piece) {
+          if (!complete) {
+            if (piece !== target) {
+              rect = piece.getBoundingClientRect()
+
+              if (intersects(rect, targetRect)) {
+                deltaX = rect.left + piece.locX - x
+                deltaY = rect.top + piece.locY - y
+                delta2 = deltaX * deltaX + deltaY * deltaY
+
+                if (delta2 < threshold) {
+                  addToGroup(target, piece, deltaX, deltaY)
+                }
+              }
+            }
+          }
+
+          //piece.style.zIndex = 0
+        })
+
+        body.onmousemove = body.ontouchmove = null
+        body.onmouseup = body.ontouchend = null
+
+        function intersects(r1, r2) {
+          return !(r2.left > r1.right || 
+                   r2.right < r1.left || 
+                   r2.top > r1.bottom ||
+                   r2.bottom < r1.top)
+        }
+
+        function addToGroup(target, piece, deltaX, deltaY) {
+          var group1 = groups[piece.id]
+          var group2 = groups[target.id]
+          var left
+            , top
+            , groupCount
+            , opacity
+
+          // Copy everything into group1, which becomes the shared array
+          // and snap the pieces to those of group1
+          group2.forEach(snapToGroup)
+          snapToGroup(target)
+
+          groupCount = group1.length
+          opacity = groupCount / pieceCount / 5
+          
+          group1.forEach(refreshImage)
+
+          // The target has moved, but there may be more matches
+          targetRect = target.getBoundingClientRect()
+          x = targetRect.left + target.locX
+          y = targetRect.top + target.locY
+
+          if (groupCount === pieceCount && !complete) {
+            // The puzzle is complete
+            complete = true
+            opacity = 1
+            group1.forEach(refreshImage)
+            div.style.backgroundColor = "#fff"
+            div.classList.add("complete")
+          }     
+
+          function snapToGroup(piece) {
+            if (group1.indexOf(piece) < 0) {
+              group1.push(piece)
+              groups[piece.id] = group1
+
+              piece.style.left = piece.offsetLeft + deltaX + "px"
+              piece.style.top = piece.offsetTop + deltaY + "px"
+            }
+          }
+
+          function refreshImage(piece) {
+            var canvas = document.createElement('canvas')
+            var context = canvas.getContext('2d');
+            var index = piecesList.indexOf(piece)
+            var blank = blankList[index]
+            var image = imageList[index]
+            var width = piece.width
+            var height = piece.height
+
+            canvas.width = width
+            canvas.height = height
+
+            context.globalAlpha = 1
+            context.drawImage(blank, 0, 0, width, height)
+            context.globalAlpha = opacity
+            context.drawImage(image, 0, 0, width, height)
+
+            piece.src = canvas.toDataURL()
+          }
+        }
+      }
+    }
+  })() 
+
+  white.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///////9VfPVsAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8xNC8xNQkEnNcAAAAqSURBVHic7cExAQAAAMKg9U/tbwagAAAAAAAAAAAAAAAAAAAAAAAAAIA3T7AAATkWl3gAAAAASUVORK5CYII="
+  source.src = "data:image/png;base64,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"
+})()
+</script>
+
+</body>
+</html>

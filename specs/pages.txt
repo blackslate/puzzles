@@ -1,0 +1,27 @@
+Index
+- register/log in | Player page
+- about
+- merchandise
+
+
+Game page
+< Home
+> Replay
+v CC
+^ Stats for puzzle
+  - Success rate, average speed (discounting immediate solutions)
+
+
+Player page
+- Ranking
+- Best scores
+
+
+About
+- contact
+
+
+Merchandise
+- Check player ranking
+- Show T-shirts (un)locked
+- Buy now...

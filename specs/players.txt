@@ -1,0 +1,19 @@
+You register as a player, and the site will record which puzzles you have solved. 
+
+We can unlock new puzzles:
+- one by one
+- as a block when you complete (most of) a previous block
+
+When a new puzzle is added:
+- Reward first correct answer
+- Reward fastest answer so far (will be first correct, then a good proportion of early answers, and will then slow down)
+
+Score
+- Best speed for puzzles solved
+- Most puzzles solved
+- Soonest puzzles solved
+
+Merchandise
+  - T-shirts
+  - puzzles
+  - Certain items only available to those who have solved a certain number of puzzles at a certain level of diffulty

@@ -1,0 +1,71 @@
+Home page shows 16 doors
+First 8 are unlocked for all players
+As you complete a set of 4 puzzles, a new row of puzzles becomes unlocked
+As you complete all puzzles on a row, that row is removed (but you can scroll to it)
+Puzzles get more difficult from left to right and from top to bottom
+If you don't solve the last puzzle in a row, the row will stay on the page, so you can fail up to 12 puzzles in the same 3 rows and still progress.
+
+
+———————
+
+The page shows 16 unlocked doors. When you solve a puzzle in one column, the solved puzzle drops below the fold, the higher puzzles in the column fall and a new puzzle appears at the top.
+
+The new puzzle should have a different colour.
+
+You can scroll the page up to see the puzzles you have already solved.
+
+You will always have 16 unsolved puzzles to play with... and if you can't solve any of them, you can click a button to get a whole new set.
+
+This means that each player will have a different set of puzzles from everyone else, appearing in a different order. The server will need to keep track of who has what.
+
+————————
+
+Statistics
+==========
+Check speed of completion, number of tries, compare puzzles solved with other users, and propose similar ones (with wildcards).
+
+
+Modules
+=======
+- Get list of puzzles to show
+  - 9 puzzles to solve
+    - Puzzles already attempted with open doors
+  - Solved puzzles below the fold (open doors)
+- Display doors for the puzzles in question
+  - Colour
+  - Internal icon (initially black and white)
+- Load puzzle
+- Tell server when the player solves the puzzle
+- Show CC information for puzzle
+- Mark puzzle as solved
+  - Leave door open (coloured icon)
+  - Drop below the fold
+
+
+Minimum Viable Product
+======================
+- Door opens when clicked, shows icon
+- Click on open door starts puzzle
+- Puzzle loads from server
+- Custom URL opens site with given puzzle already open
+  - can be called on any puzzle, even those not yet shown to the player
+
+
+Server-side
+===========
+- Script
+- CSS
+- headless HTML
+- icon for door
+
+
+Doors
+=====
+Create SVG items dynamically
+ - data-hash, icon and colours read in on the fly
+ - use individual rects, not <use>
+Use animation to open door
+Use animation to fade in icon
+As the door zooms out, make icon
+ - fade to a point
+ - or expand and fade

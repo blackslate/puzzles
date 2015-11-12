@@ -4,6 +4,7 @@ html, body {
   overflow:hidden;
   height: 100%;
   background:#000;
+  color: #fff;
 }
 svg {
   position:fixed;
@@ -76,6 +77,55 @@ use.mrr {
   fill:#e8a;
   color:#935;
 }
+section {
+  width: 100%;
+  height: 100%;
+}
+section.hidden {
+  display:none;
+}
+nav {
+  position: fixed;
+  top: 1em;
+}
+nav.vertical {
+  transform:rotate(90);
+}
+
+a {
+position: fixed;
+top: 0;
+width: 10vmin;
+height: 10vmin;
+border: 1px solid rgba(255, 255, 255, .5);
+border-bottom-color: rgba(102, 102, 102, .5);
+border-right-color: rgba(102, 102, 102, .5);
+opacity:0.25;
+}
+a:hover,
+a:active  {
+opacity:1;
+}
+a:active  {
+border: 1px solid rgba(255, 255, 255, .5);
+border-top-color: rgba(102, 102, 102, .5);
+border-left-color: rgba(102, 102, 102, .5);
+}
+a[href='#reset'] {
+  right: 0;
+}
+a svg {
+  position:absolute;
+  /*width: 100%;
+  height: 100%;*/
+}
+a svg use{ 
+ position:absolute;
+ left:50%;
+ top:50%;
+ margin-top: -5vmin;
+ margin-left: -5vmin;
+}
 
 main {
  position:absolute;
@@ -87,7 +137,6 @@ main {
  margin-top:-50vmin;
  background-color:#000;
  color:#fff;
-}
-main.hidden {
-  display:none;
+
+ /*display:none;*/
 }

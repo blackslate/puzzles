@@ -1,6 +1,6 @@
 ;(function (window){
   // var lx = window.lx =
-  var $section = $("section")
+  var $main = $("main")
 
   $("a").click(getAjaxPage)
 
@@ -15,7 +15,7 @@
     result = "puzzles/" + result[1] + ".html"
     console.log(result)
 
-    $section.load( result );
+    $main.load( result );
 
     // $.ajax({
     //   url: result

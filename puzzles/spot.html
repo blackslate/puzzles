@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <title>Puzzle n° 20</title>
+  <style>
+    html, body {
+      margin:0;
+      padding:0;
+      overflow:hidden;
+      height: 100%;
+      background:#000;
+      text-align:center;  
+      font-family:"Verdana";
+    }
+    body * {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    main {
+     position:absolute;
+     width:100vmin;
+     height:100vmin;
+     left:50%;
+     top:50%;
+     margin-left:-50vmin;
+     margin-top:-50vmin;
+     background:#000;
+     color:#fff;
+    }
+    h1, svg.container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;;
+    }
+    h1 {
+      text-align: right;
+      margin:0;
+      pointer-events: none;
+      z-index:1;
+    }
+    svg.container {
+      height: 100%;     
+    }
+    img {
+      position:absolute;
+      top:0;
+      left:0;
+   }
+   </style>
+</head>
+<body style="background:#000;color:#fff">
+
+<main>
+  <svg class="container" viewbox="-400 -400 800 800">
+    <defs>
+      <radialGradient id="radial" cx="50%" cy="50%" r="100%" fx="25%" fy="25%">
+        <stop offset="0%" style="stop-color:#ccc" />
+        <stop offset="100%" style="stop-color:#666" />
+      </radialGradient>
+
+      <symbol id="disc">
+        <circle cx="122" cy="122" r="122" fill="url(#radial)"/>
+      </symbol>
+
+      <symbol id="spot" style="fill:#900">
+        <circle cx="200" cy="200" r="200"/>
+      </symbol>
+    </defs>
+    <rect x="-400" y="-400" width="800" height="800" style="fill: #200"/>
+
+    <use
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="#spot"
+      transform="translate(-200 -200)">
+    </use>
+
+    <circle
+      cx="0"
+      cy="0"
+      r="1"
+      fill="#f00"/>
+  </svg>
+
+  <h1>Cover the Spot</h1>
+</main>
+
+<script>
+;(function () {
+  var body = document.body
+  var main = document.querySelector("main")
+  var h1 = document.querySelector("h1")
+  var container = document.querySelector(".container")
+  var svgNS = "http://www.w3.org/2000/svg"
+  var xlinkNS = "http://www.w3.org/1999/xlink"
+  var twoPI = Math.PI * 2
+  var width = container.viewBox.animVal.width
+ 
+  var spotRadius = 200
+  var ratio = 0.609383
+
+  var discRadius = spotRadius * ratio // 121.8766
+  var realRadius = Math.ceil(discRadius) // 122 HARDCODED #disc radius
+  var inner2 = discRadius * discRadius
+  var outer2 =  spotRadius * spotRadius - inner2
+  var outerRadius = Math.sqrt(outer2)
+  var alpha = Math.acos(spotRadius / (discRadius * 2))
+  var beta = Math.asin(ratio)
+  var theta = alpha + beta // angle between outer and inner discs
+  // angle between inner discs = ±2 * alpha or π ± alpha
+
+  // PAGE COORDINATES
+  var centreX
+    , centreY
+    , xAdjust
+    , yAdjust
+    , scale // page coordinates * scale = SVG coordinates
+
+  // <HARD-CODED starting positions for discs>
+  var translates = [
+    { x: -400, y:  156 }
+  , { x: -400, y:  017 }
+  , { x: -400, y: -122 }
+  , { x: -400, y: -261 }
+  , { x: -400, y: -400 }
+  ]
+
+  // <HARD-CODED snap distance (as a square of the hypothenuse)
+  var snapDelta = 25 // unscaled = fixed distance
+  var discPositions = [] // { x: <>, y: <>, more: {...} }
+  var snapLocs = []
+  var combinations = []
+  var positions = []
+
+  var lastRect
+    , disc
+    , id
+    , combinations
+
+  container.onmousedown = container.ontouchstart = startDrag
+
+  ;(function createDiscs(){    
+    for (ii=0; ii<5; ii+=1) {
+      addDisc(ii)
+    }
+
+    function addDisc(index) {
+      var disc = document.createElementNS(svgNS,"use")
+      var translate = translates[ii]
+      var transform = "translate("+ translate.x + " " + translate.y +")"
+
+      disc.setAttributeNS(xlinkNS, "xlink:href", "#disc")
+      disc.setAttribute("transform", transform)
+      disc.setAttribute("id", "disc_" + ii)
+      disc.setAttribute("opacity", "0.9")
+
+      container.appendChild(disc)
+    }
+  })()
+
+  function startDrag(event) {
+    event.preventDefault()
+    disc = event.target
+    id = disc.id 
+
+    if (!id || !/disc/.test(id)) {
+      return
+    }
+
+    setScaleAndCentre()
+
+    // Bring this disc to the top
+    container.removeChild(disc)
+    container.appendChild(disc)
+
+    var snapIndex = -1
+    var index = getDiscIndex(id)
+    var clickX = event.pageX
+    var clickY = event.pageY
+
+    // PAGE COORDINATES
+    // Get centre of spot with current page scroll
+    var rect = disc.getBoundingClientRect() 
+    var radius = realRadius / scale // Firefox has odd rect value
+    var radius2 = radius * radius
+    // Get offset from click point to centre of disc
+    var offsetX = rect.left + radius - clickX
+    var offsetY = rect.top + radius - clickY
+
+    // SVG COORDINATES
+    var translate = translates[index]
+    var startX = translate.x
+    var startY = translate.y
+    var translateX
+      , translateY
+
+    body.onmousemove = body.ontouchmove = dragDisc
+    body.onmouseup = body.ontouchend = stopDrag
+
+    function dragDisc(event) {
+      var snapIndex = -1
+      var pageLoc = { x: event.pageX, y: event.pageY}
+      if (!snapLocs.length) {
+        snapFirst(pageLoc)
+      } else {
+        snapToKnownPositions(pageLoc)
+      }
+
+      translateX = (pageLoc.x - clickX) * scale + startX
+      translateY = (pageLoc.y - clickY) * scale + startY
+
+      transform = "translate("+ translateX + " " + translateY +")"
+      disc.setAttribute("transform", transform)
+    }
+
+    function snapFirst(pageLoc) {
+      var dX = ( pageLoc.x + offsetX - centreX )
+      var dY = ( pageLoc.y + offsetY - centreY )
+      var d2 = ( dX * dX + dY * dY )
+
+      var SVGd = Math.sqrt(d2 * scale * scale)
+      var snap = Math.sqrt(snapDelta)
+      var radius2
+        , radius
+        , d
+
+      if (Math.abs(SVGd - discRadius) < snap) {
+        // Can snap edge to centre of spot
+        radius2 = inner2
+      } else if (Math.abs(SVGd - outerRadius) < snap) {
+        // Can snap to outer ring
+        radius2 = outer2
+      }
+
+      if (radius2) {
+        radius = Math.sqrt(radius2) / scale
+        d = Math.sqrt(d2)
+
+        pageLoc.x += radius * dX / d - dX
+        pageLoc.y += radius * dY / d - dY
+
+        snapIndex = 1
+      } else {
+        snapIndex = -1
+      }
+    }
+
+    function snapToKnownPositions(pageLoc) {
+      var total = snapLocs.length
+      var dX
+        , dY
+        , d2
+        , snapLoc
+
+      for (var ii = 0; ii < total; ii += 1) {
+        snapLoc = snapLocs[ii]
+        if (snapLoc) {
+          dX = snapLoc.x - (pageLoc.x + offsetX)
+          dY = snapLoc.y - (pageLoc.y + offsetY)
+          d2 = (dX * dX + dY * dY)
+
+          if (Math.abs(d2) < snapDelta) {
+            // Snap to this location
+            pageLoc.x = snapLoc.x - offsetX
+            pageLoc.y = snapLoc.y - offsetY
+            snapIndex = ii
+            // Stop looking for a match
+            return
+          }
+        }
+      }
+
+      snapIndex = -1
+    }
+
+    function stopDrag(event) {
+      body.onmousemove = body.ontouchmove = body.onmouseup = body.ontouchend = null
+
+      if (!translateX) {
+        // Click and release: No ...move() event was triggered
+        return
+      }
+      
+      translate.x = translateX
+      translate.y = translateY
+
+      if (snapIndex > -1) {
+        if (!discPositions.length) {
+          defineDiscPositions()
+        } else {
+          refineDiscPositions()
+          positions.push(translate)
+        }
+
+        // PREVENT SUBSEQUENT DRAGGING
+        disc.setAttribute("opacity", "1")
+        disc.id = "fixed_"+index
+        
+        if (positions.length === 5) {
+          healWound()
+        }
+      }
+    }
+
+    function defineDiscPositions() {
+      var dX = translateX + realRadius
+      var dY = translateY + realRadius
+      var d2 = dX * dX + dY * dY
+      var radians = Math.atan2(dX, -dY) // 0 at 12 o'clock > ± π
+
+      if (Math.abs(d2 - outer2) < 10) { // typically < 0.01
+        defineOuterPositions()
+      } else if (Math.abs(d2 - inner2) < 10){
+        defineInnerPositions()
+      } else {
+        // This should never happen
+        console.log("Bad snap:", d2 - outer2, d2 - inner2)
+        return
+      }
+  
+      positions.push(translate)
+      lastRect = 0 // force snapLocs to be updated on next setScale...
+
+      function defineOuterPositions() {
+       // 2 known inner positions ±theta
+        angle = radians + theta
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians - theta
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        // 2 alternative outer positions ±2 * theta
+        var angle = radians + (2 * theta)
+        var x = Math.sin(angle) * outerRadius
+        var y = -Math.cos(angle) * outerRadius
+        var position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians - (2 * theta)
+        x = Math.sin(angle) * outerRadius
+        y = -Math.cos(angle) * outerRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+         // 2 alternative inner positions (π ± alpha)
+        angle = radians + Math.PI + beta
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians + Math.PI - beta
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        combinations = [
+          [0,1,2,4]
+        , [0,1,3,5]
+        ]
+      }
+
+      function defineInnerPositions() {
+        // 4 possible outer positions (of which 2 will be used)
+        // Adjacent: 2 chances out of 3
+        var angle = radians + theta
+        var x = Math.sin(angle) * outerRadius
+        var y = -Math.cos(angle) * outerRadius
+        var position = { x: x, y: y }
+        discPositions.push(position)
+        
+        angle = radians - theta
+        x = Math.sin(angle) * outerRadius
+        y = -Math.cos(angle) * outerRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        // Opposite: 1 chance each out of 3...
+        angle = radians + Math.PI + beta
+        x = Math.sin(angle) * outerRadius
+        y = -Math.cos(angle) * outerRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians + Math.PI - beta
+        x = Math.sin(angle) * outerRadius
+        y = -Math.cos(angle) * outerRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        // 4 possible inner positions (of which 2 will be used)
+        // Adjacent
+        angle = radians + 2 * alpha
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians - 2 * alpha
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        // Opposite
+        angle = radians + Math.PI + alpha
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        angle = radians + Math.PI - alpha
+        x = Math.sin(angle) * discRadius
+        y = -Math.cos(angle) * discRadius
+        position = { x: x, y: y }
+        discPositions.push(position)
+
+        combinations = [
+          [0,1,6,7]
+        , [0,2,5,7]
+        , [1,3,4,6]
+        ]
+      }
+    }
+
+    function refineDiscPositions() {
+      // snapIndex indicates where the most recent disc has been
+      // dropped. Only those combinations that contain this index
+      // can be retained.
+       
+      combinations = combinations.filter(function (combination) {
+        return (combination.indexOf(snapIndex) > -1)
+      })
+
+      var allowed = []
+
+      combinations.forEach(function (combination) {
+        combination.forEach(function (index) {
+          if (allowed.indexOf(index) < 0) {
+            allowed.push(index)
+          }
+        })
+      })
+
+      snapLocs.forEach(function (snapLoc, index) {
+        if (allowed.indexOf(index) < 0) {
+          snapLocs[index] = 0
+          discPositions[index] = 0
+        }
+      })
+
+      snapLocs[snapIndex] = 0
+      discPositions[snapIndex] = 0
+    }
+
+    function getDiscIndex(id) {
+      // "disc_0" => 0
+      var result = /disc_(\d)/.exec(id)
+
+      if (result) {
+        result = parseInt(result[1], 10)
+      }
+
+      return result
+    }
+
+    function setScaleAndCentre () {
+      var rect = container.getBoundingClientRect()
+      if (lastRect === rect) {
+        // The window size has not changed
+        return
+      }
+
+      lastRect = rect
+
+      xAdjust = rect.left
+      yAdjust = rect.top
+      centreX = (rect.left + rect.right) / 2
+      centreY  = (rect.top + rect.bottom) / 2
+      scale = width / rect.width
+
+      if (discPositions.length) {
+        updateSnapLocs()
+      }
+
+      function updateSnapLocs() {
+        snapLocs = []
+        var radius = 0 // realRadius / scale
+        var loc
+        var img
+
+        discPositions.forEach(function (position) {
+          // position.x and .y are defined relative to (0, 0) in SVG
+          // space. Convert to points relative to (centerX, centreY)
+          // in page space
+
+          if (position) {
+            loc = {}
+            loc.x = centreX + position.x / scale - radius
+            loc.y = centreY + position.y / scale - radius
+          } else {
+            loc = 0
+          }
+
+          snapLocs.push(loc)
+        })
+      }
+    }
+  }
+
+  function healWound() {
+    var img
+      , translate
+      , left
+      , top
+      , size
+
+    console.log(positions)
+
+    // <image xlink:href="firefox.jpg" x="0" y="0" height="50px" width="50px"/>
+    for (var ii = 0; ii < 5; ii += 1){
+      var img = document.createElement("img")
+      img.src = source
+      var translate = positions[ii]
+      var left = (translate.x + width / 2) / width * 100 + "%"
+      var top = (translate.y + width / 2) / width * 100 + "%"
+      var size = "31%" // <HARD-CODED for simplicity>
+
+      img.style.left = left
+      img.style.top = top
+      img.style.width = size
+
+      main.appendChild(img)
+    }
+
+    h1.innerHTML = "Time heals all wounds"
+    main.removeChild(container)
+  }
+
+  var bandaid = "data:image/jpg;base64,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"
+
+
+  var canvas = document.createElement("canvas")
+  var img = document.createElement("img")
+  var source
+
+  img.onload = function cookieCutter() {
+    var width = img.width
+    canvas.width = width
+    canvas.height = img.height
+    var trim = 2
+    var radius = width / 2 - trim
+    context = canvas.getContext("2d")
+    context.beginPath()
+    context.arc(radius,radius, radius,0,2*Math.PI);
+    context.clip()
+    context.drawImage(img, -trim, -trim)
+
+    source = canvas.toDataURL()
+  }
+
+  img.src = bandaid
+
+})()
+</script>
+</body>
+</html>

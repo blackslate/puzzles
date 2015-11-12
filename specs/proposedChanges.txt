@@ -1,0 +1,47 @@
+0043_twoInOne
+=============
+- Change to I rather than Я
+- Size of 1s and 0s decreases as size of 1>>I grows
+- Morph to I to complete when it fills the window
+  - size of 1s and 0s continues to reduce until it fills the shape
+  - colour of background brightens until I is completely white (and 1s and 0s are infinitessimally small)
+
+0017_jigsaw
+===========
+- Make more complex jigsaw piece shapes
+
+0022_clock
+==========
+- Don't restart at 0
+- Fix animation
+
+0041_seasons
+============
+- Use un-watermarked image
+- Find new 
+
+0027_magic
+==========
+- animation to final magic square
+
+0009_passwordNo
+===============
+- New animGIF, or SVG animation
+
+0038_creation
+=============
+- More equations doing more interesting things coming out of the space
+
+0024_simple
+===========
+- Compatibility with more browsers
+
+0037_dice
+=========
+- Dice rolls...
+- ... to a different end position each time
+
+0045_morse
+==========
+- Audio cue after each attempt
+- Interesting ending
