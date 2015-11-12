@@ -7,48 +7,18 @@
   var xlinkNS = "http://www.w3.org/1999/xlink"
   var svg = document.querySelector("svg"); 
   var g = document.querySelector("svg>g")
+  var doors = [].slice.call(document.querySelectorAll("svg.doors>g"))
   var open = -1
-  var doors = []
-  var locked = []
   var readyToPlay = false
-  var current // will become data-hash
-
-  ;(function initializeDoors(){
-    var collection = document.querySelectorAll("svg>g>use")
-    var ratio = getSVGRatio()
-    var gRect = g.getBoundingClientRect()
-    var rect
-      , left
-      , top
-      , lock
-
-    for (var ii = 0, door; door = collection[ii]; ii += 1) {
-      doors.push(door)
-      
-      // TODO: add icon for open door
-
-      if (locked.indexOf(ii) > -1) {
-        rect = door.getBoundingClientRect()
-        left = String((rect.left - gRect.left) / ratio)
-        top = String((rect.top - gRect.top) / ratio)
-
-        lock = document.createElementNS(svgNS,"use")
-        lock.setAttributeNS(xlinkNS,"xlink:href", "#lock")
-        lock.setAttributeNS(null,"x", left)
-        lock.setAttributeNS(null,"y", top)
-        lock.setAttributeNS(null,"class", door.classList[0])
-   
-        g.appendChild(lock)
-      }
-    }
-  })()
+  var svgRect
+    , hash
 
   ;(function prepareReset(){
     var reset = document.querySelector("a[href='#reset']")
 
     reset.onclick = function reset (event) {
       event.preventDefault()
-      loadPuzzle(current)
+      loadPuzzle(hash)
     }
   })()
 
@@ -58,9 +28,11 @@
     var target = event.target
     var index
 
-    while (target.parentNode
-       && target.parentNode.nodeName.toLowerCase() !== "g") {
-      target = target.parentNode
+    while (target = target.parentNode) {
+      if ((target.nodeName.toLowerCase() === "g")
+       && (hash = target.getAttribute("data-hash"))) {
+        break
+      }
     }
 
     if (!target) {
@@ -68,16 +40,23 @@
     }
 
     index = doors.indexOf(target)
-    if (locked.indexOf(index) < 0) {
-      if (index === open) {
-        enterRoom(target)
-      } else {
-        (doors[open]) 
-          ? doors[open].setAttributeNS(xlinkNS, "xlink:href", "#shut")
-          : null
-        target.setAttributeNS(xlinkNS, "xlink:href", "#open")
-        open = index
+    if (index === open) {
+      enterRoom(target)
+    } else {
+      animate("shut", doors[open]) 
+      animate("open", target)      
+      open = index
+    }
+
+    function animate(animName, g) {
+      if (!g) {
+        return
       }
+
+      var selector = "g[data-hash='"+g.getAttribute("data-hash")+"']"
+      selector += " polygon animate." + animName
+      var animation = document.querySelector(selector)
+      animation.beginElement()
     }
   }
 
@@ -85,14 +64,13 @@
     var ratio = getSVGRatio()
     var scale = 1
     var scaleFactor = 1.1 // zooms to over 100x in 49, 300x in 60 frames
-    var gRect = g.getBoundingClientRect()
     var rect = target.getBoundingClientRect() 
 
     // Scale from centre
     var adjustX = rect.width / (2 * ratio)
     var adjustY = rect.height / (2 * ratio)
-    var centreX = (rect.left - gRect.left) / ratio + adjustX
-    var centreY = (rect.top - gRect.top) / ratio + adjustY
+    var centreX = (rect.left - svgRect.left) / ratio + adjustX
+    var centreY = (rect.top - svgRect.top) / ratio + adjustY
     var start = + new Date()
 
     var left
@@ -100,18 +78,24 @@
       , transform
 
     // Get the puzzle from the site
-    current = target.getAttribute("data-hash")
-    loadPuzzle(current)
+    loadPuzzle(hash)
 
     // Stop tracking the user's input for this activity
     body.onmouseup = body.ontouchend = null
 
-    g.removeChild(target)
+    svg.removeChild(target)
     target.setAttributeNS(null, "x", "0")
     target.setAttributeNS(null, "y", "0")
-    g.appendChild(target)
+    svg.appendChild(target)
 
-    ;(function zoom(){
+    var selector = "g[data-hash='" + hash + "']"
+    selector += " image animate.fade"
+    var animation = document.querySelector(selector)
+    var duration = parseInt(animation.getAttribute("dur"), 10)
+    animation.beginElement()
+    setTimeout(zoom, duration)
+
+    function zoom(){
       scale *= scaleFactor
       left = centreX - adjustX * scale
       top = centreY - adjustY * scale
@@ -125,15 +109,15 @@
       } else {
         preparePuzzle()
       }
-    })()
+    }
   }
 
   function getSVGRatio() {
-    var rect = svg.getBoundingClientRect()
+    svgRect = svg.getBoundingClientRect()
     var box = svg.viewBox.animVal
 
-    var widthRatio = rect.width / box.width
-    var heightRatio = rect.height / box.height
+    var widthRatio = svgRect.width / box.width
+    var heightRatio = svgRect.height / box.height
     var ratio = Math.min(widthRatio, heightRatio)
 
     return ratio
@@ -142,7 +126,7 @@
   function loadPuzzle(hash) {
     // hash is "#puzzlename"
     // GET AJAX AND CALL preparePuzzle() ON SUCCESS
-    var result = "puzzles/" + hash.substring(1) + ".html"
+    var result = "puzzles/" + hash.substring(1) + "/index.html"
     $article.load( result, done);
 
     function done() {
