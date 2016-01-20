@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang=en>
-<head>
-  <meta charset="utf-8">
-  <title>Dials</title> 
-</style>
-</head>
-
-<body>
-<svg class="puzzle" viewbox="0 0 1300 1300" version="1.1"
-  xmlns="http://www.w3.org/2000/svg">
-   <circle cx="650" cy="650" r="650" fill="#fff" />
-   <rect x="0" y="0" width="600" height="100" fill="#1B2F1B" transform="translate(600 600) rotate(-18 50 50) translate(400 0)"/>
- </svg>
-
-<script>
-;(function () {
+function puzzleLoaded(reloaded) {
   var body = document.body
   var svg = document.querySelector("svg.puzzle")
   var main = svg.parentNode
@@ -45,6 +29,14 @@
   // Barl
   var bars = []
   var barPoints = []
+
+  if (reloaded) {
+    var selector = "svg.puzzle path"
+    var paths = [].slice.call(document.querySelectorAll(selector))
+    paths.forEach(function (path) {
+      path.parentNode.removeChild(path)
+    })
+  }
 
   body.ontouchstart = function (event) {
     event.preventDefault()
@@ -551,7 +543,6 @@
   function showDone() {
     var green = "#232"
     svg.onmousedown = svg.ontouchdown = null
-    main.style.background = green
 
     dials.forEach(function(path) {
       if (path) {
@@ -575,6 +566,4 @@
     scale = cX / (pX - rect.left)
     console.log(pX, cX, scale)
   }
-})()
-</script>
-</body>
+}

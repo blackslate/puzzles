@@ -1,0 +1,100 @@
+html, body {
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  height: 100%;
+  background:#000;
+}
+body * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+main {
+ position:absolute;
+ width:100vmin;
+ height:100vmin;
+ left:50%;
+ top:50%;
+ margin-left:-50vmin;
+ margin-top:-50vmin;
+ background:#000;
+ color:#fff;
+}
+img, div, svg {
+  position:absolute;
+}
+div {
+  width:100%;
+  height:100%;
+  background-color: #000;
+  opacity: 0;
+}
+div.show {
+  opacity: 1;
+}
+div.fade {
+  transition: opacity 5s ease-in-out;
+  -moz-transition: opacity 5s ease-in-out;
+  -webkit-transition: opacity 5s ease-in-out;
+}
+.panic { 
+  -webkit-animation: pulsate 1s 5; 
+  -moz-animation: pulsate 1s 5
+  -o-animation: pulsate 1s 5
+  animation:  pulsate 1s 5
+}
+@-webkit-keyframes pulsate {
+  0% { opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+@-moz-keyframes pulsate {
+  0% { opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+@-o-keyframes pulsate {
+  0% { opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+@-keyframes pulsate {
+  0% { opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+svg.circle {   
+  width:48.4%;
+  height:48.4%;
+  left: 49.5%;
+  top: 49%;
+}
+#dont, #free {
+  top:1.6%;
+  left:1.6%;
+}
+#dont {
+  width: 73.1%;
+}
+#free {
+  width: 66.6%;
+}
+#button, #hole {
+  top: 48.9%;
+  left: 48.7%;
+  width:51.2%;
+}
+#panic {
+  left:59.2%;
+  top:67.3%;
+  width:30.2%;
+  opacity:0;
+}
+div#red {
+  pointer-events: none;
+  background-color: #f00;
+}

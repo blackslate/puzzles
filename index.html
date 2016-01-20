@@ -3,7 +3,9 @@
 <head>
   <title>Puzzle</title>
   <link rel="stylesheet" type="text/css" href="css/doors.css">
+  <link rel="stylesheet" type="text/css" class="puzzle">
   <script src="//code.jquery.com/jquery-2.1.4.js"></script>
+  <script class="puzzle"></script>
 </head>
 
 <body>
@@ -67,44 +69,701 @@
       fill="#fff"  />
   </defs>
 
-  <g>
-    <use x="0"   y="0" xlink:href="#shut" class="rrr"
-         data-hash="#button"/>
-    <use x="125" y="0" xlink:href="#shut" class="rry"
-         data-hash="#window"/>
-    <use x="250" y="0" xlink:href="#shut" class="ryy"
-         data-hash="#jigsaw"/>
-
-    <use x="0"   y="125" xlink:href="#shut" class="yg"
-         data-hash="#maze"/>
-    <use x="125" y="125" xlink:href="#shut" class="gg"
-         data-hash="#dials"/>
-    <use x="250" y="125" xlink:href="#shut" class="gc"
-         data-hash="#fractal"/>
-
-    <use x="0"   y="250" xlink:href="#shut" class="ccb"
-         data-hash="#spot"/>
-    <use x="125" y="250" xlink:href="#shut" class="cbb"
-         data-hash="#missing"/>
-    <use x="250" y="250" xlink:href="#shut" class="bbb"
-         data-hash="#trust"/>
-
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
          
-    <image xlink:href="puzzles/button/icon.png" x="40" y="80" height="40px" width="40px"/>
-    <image xlink:href="puzzles/window/icon.png" x="165" y="80" height="40px" width="40px"/>
-    <image xlink:href="puzzles/jigsaw/icon.png" x="290" y="80" height="40px" width="40px"/>
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
          
-    <image xlink:href="puzzles/maze/icon.png" x="40" y="205" height="40px" width="40px"/>
-    <image xlink:href="puzzles/dials/icon.png" x="165" y="205" height="40px" width="40px"/>
-    <image xlink:href="puzzles/fractal/icon.png" x="290" y="205" height="40px" width="40px"/>
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
          
-    <image xlink:href="puzzles/spot/icon.png" x="40" y="330" height="40px" width="40px"/>
-    <image xlink:href="puzzles/missing/icon.png" x="165" y="330" height="40px" width="40px"/>
-    <image xlink:href="puzzles/trust/icon.png" x="290" y="330" height="40px" width="40px"/>
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
+  </g>
+
+  <g class="rrr"
+    data-hash="#button">
+    <rect
+      x="0"
+      y="0" 
+      width="120"
+      height="120"/>
+    <rect
+      x="30"
+      y="20"
+      width="60"
+      height="100"
+      fill="#000"
+      opacity="0.8">
+      <animate
+        class="black"
+        attributeName="opacity"
+        begin="indefinite"
+        dur="500ms"
+        from="0.8"
+        to="1"
+        fill="freeze"
+      />
+    </rect>
+         
+    <image
+      xlink:href="puzzles/button/icon.png"
+      x="40"
+      y="70"
+      height="40px"
+      width="40px">
+    </image>
+
+    <polygon
+      points="
+        30,120
+        90,120
+        90,20
+        30,20"
+      fill="currentColor">
+      <animate
+        class="open"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          30,120
+          90,120
+          90,20
+          30,20"
+        to="
+         100,120
+          90,120
+          90,20
+          100,10"
+        fill="freeze"
+      />
+      <animate
+        class="shut"
+        attributeName="points"
+        begin="indefinite"
+        dur="500ms"
+        from="
+          100,120
+          90,120
+          90,20
+          100,10"
+        to="
+          30,120
+          90,120
+          90,20
+          30,20"
+        fill="freeze"
+      />
+    </polygon>
   </g>
 </svg>
 
-<section  class="hidden">
+<section class="hidden">
   <article></article>
 
   <nav>

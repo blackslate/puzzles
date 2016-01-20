@@ -69,3 +69,6 @@ Use animation to fade in icon
 As the door zooms out, make icon
  - fade to a point
  - or expand and fade
+
+
+Puzzles need to be able to get the colour of the 
