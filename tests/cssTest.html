@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <title>CSS Refresh Test</title>
+  <link rel="stylesheet" type="text/css" href="" id="css">
+</head>
+<body>
+<h1>Header should go red</h1>
+<script>
+  ;(function loadCSS(){
+    var linkElement = document.querySelector("#css")
+    linkElement.onload = onLoad
+    linkElement.addEventListener("load", listener, false)
+    linkElement.onreadystatechange = 
+
+    document.onclick = function() {
+      linkElement.setAttribute("href", "css/test.css")
+    }
+
+    function onLoad(event) {
+      console.log("onLoad", event)
+    }
+    function listener(event) {
+      console.log("listener", event)
+    }
+    function readyStateChange(event) {
+      console.log("readyStateChange", event)
+    }
+  })()
+</script>
+</body>
+</html>

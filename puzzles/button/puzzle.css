@@ -1,30 +1,6 @@
-html, body {
-  margin:0;
-  padding:0;
-  overflow:hidden;
-  height: 100%;
-  background:#000;
-}
-body * {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-main {
- position:absolute;
- width:100vmin;
- height:100vmin;
- left:50%;
- top:50%;
- margin-left:-50vmin;
- margin-top:-50vmin;
- background:#000;
- color:#fff;
-}
-img, div, svg {
+main img,
+div,
+svg {
   position:absolute;
 }
 div {
