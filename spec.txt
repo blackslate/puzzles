@@ -8,4 +8,6 @@ I can use vmin to get the minimum dimension of the entire window, but the usable
 I can create a div which has
 * no height
 * a padding of 100%
-* a width of 100%
+* a width of 100
+
+If  a game is already loaded, simply call reset()
