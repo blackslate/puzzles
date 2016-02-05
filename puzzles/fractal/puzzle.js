@@ -141,20 +141,16 @@
       rect.y = y - boundingRect.top
       rect.width = rect.height = 1
 
-      // if (svg.checkIntersection) {
-      //   hit = svg.checkIntersection(use, rect)
-      // } else {
-        rect = use.getBoundingClientRect()
-        hit = x < rect.left
+      rect = use.getBoundingClientRect()
+      hit = x < rect.left
+          ? false
+          : x > rect.right
             ? false
-            : x > rect.right
+            : y < rect.top
               ? false
-              : y < rect.top
+              : y > rect.bottom
                 ? false
-                : y > rect.bottom
-                  ? false
-                  : true
-      // }
+                : true
 
       if (!hit) {
         // The click was on a nested pentagon, outside the rect of the
