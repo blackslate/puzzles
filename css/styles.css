@@ -2,9 +2,7 @@
 html, body {
 margin: 0;
 height: 100%;
-background-color: #fff;
-/*padding:0;
-overflow:hidden;*/
+background-color: #000;
 }
 body {
 display: flex;
