@@ -1,11 +1,13 @@
-// TODO: Read local storage for puzzles that were completed earlier
-
 ;(function puzzleManager(window){
   document.body.ontouchstart = function(event) {
     event.preventDefault()
   }
   document.querySelector("nav").addEventListener(
     "click"
+  , showGame
+  , false)
+  document.querySelector("nav").addEventListener(
+    "touchend"
   , showGame
   , false)
 
@@ -82,9 +84,7 @@
       loadPuzzle()
     }
 
-
     function loadPuzzle() {
-      // hash is "puzzlename"
       puzzle.hash = hash
 
       // GET AJAX AND CALL preparePuzzle() ON SUCCESS
@@ -101,10 +101,6 @@
       function done(event) {
         var element = event.target
         element.removeEventListener("load", done, false)
-
-        // 
-        // 
-
         checkIfAllIsLoaded()
       }
 

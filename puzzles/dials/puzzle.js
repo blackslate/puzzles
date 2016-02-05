@@ -183,7 +183,8 @@ function puzzleLoaded(reloaded) {}
       openings.push(0)
       gapDegrees.push(gaps)
       if (options.drag) {
-        path.classList.add(options.drag)
+        // Use workaround for IE 11
+        addToClassList(path, options.drag)
       }
     
       svg.appendChild(path)
@@ -271,7 +272,8 @@ function puzzleLoaded(reloaded) {}
       path.setAttributeNS(null,"d",d)
       path.setAttributeNS(null,"transform", transform + offset)
       path.setAttributeNS(null,"style","fill:"+fill)
-      path.classList.add("slide")
+      // Use workaround for IE 11
+      addToClassList(path, "slide")
 
       barPoint = {
         transform: transform
@@ -287,19 +289,44 @@ function puzzleLoaded(reloaded) {}
       svg.appendChild(path)
     }
 
+    function addToClassList(svgElement, className) {
+      if (svgElement.classList) {
+        svgElement.classList.add(className)
+      } else {
+        // Workaround for IE 11: classList not defined on SVG elements
+        var baseVal = " " + svgElement.className.baseVal + " "
+        if (baseVal.indexOf(" " + className + " ") < 0) {
+          baseVal = (baseVal + className).trim()
+          svgElement.setAttribute("class", baseVal)
+        }
+      }
+    }
+        
+        
+
     svg.onmousedown = svg.ontouchstart = startDrag
       
     function startDrag(event) {
       var target = event.target
       setScale()
 
-      if (target.classList.contains("rotate")) {
+      // Use workaround for IE 11
+      if (classListContains(target, "rotate")) {
         return startRotate(event, target)
       }
 
-      if (target.classList.contains("slide")) {
+      if (classListContains(target, "slide")) {
         return startSlide(event, target)
       }
+    }
+
+    function classListContains(svgElement, className) {
+      // if (svgElement.classList) {
+      //   return svgElement.classList.contains(className)
+      // } else {
+        var baseVal = " " + svgElement.className.baseVal + " "
+        return (baseVal.indexOf(" " + className + " ") > -1)
+      // }
     }
 
     function startRotate(event, target) {

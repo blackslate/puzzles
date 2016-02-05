@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <title>iOS Test</title>
+  <style>
+html, body {
+margin: 0;
+height: 100%;
+background-color: #333;
+}
+body {
+display: flex;
+align-items: center;
+}
+
+html, img {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+-webkit-user-drag: none;
+-khtml-user-drag: none;
+-moz-user-drag: none;
+-ms-user-drag: none;
+user-drag: none;
+}
+nav {
+float: left;
+height: 100%;
+width: 96px;
+background-color: #666;
+text-align:center;
+overflow: auto;
+}
+main {
+float: left;
+height: 100vmin;
+max-height: calc(100vw - 96px);
+width: calc(100vw - 96px);
+}
+
+article {
+position: relative;
+margin: 0 auto;
+background-color: #f00;
+color: #fff;
+height: 100vmin;
+width: 100vmin;
+max-width: 100%;
+max-height: calc(100vw - 96px);
+box-sizing: border-box;
+border: 1px solid #fff;
+}
+
+nav ul {
+list-style-type: none;
+padding-left:0;
+}
+
+nav li {
+padding: 8px 0;
+}
+
+nav a img {
+-webkit-filter: drop-shadow(0px 0px 8px #fff);
+-moz-filter: drop-shadow(0px 0px 8px #fff);
+-ms-filter: drop-shadow(0px 0px 8px #fff);
+-o-filter: drop-shadow(0px 0px 8px #fff);
+filter: drop-shadow(0px 0px 8px #fff);
+position: relative;
+width: 64px;
+}
+
+nav a.done img{
+-webkit-filter: none;
+-moz-filter: none;
+-o-filter: none;
+filter: none;
+}
+
+nav a {
+height: 64px;
+}
+
+nav a:visited img {
+-webkit-filter: none;
+-moz-filter: none;
+-ms-filter: none;
+-o-filter: none;
+filter: none;}
+  </style>  
+</head>
+<body>
+<nav>Nav</nav>
+<main>
+  <article>article</article>
+</main>
+
+<script src="js/viewport-units-buggyfill.js"></script>
+<script src="js/viewport-units-buggyfill.hacks.js"></script>
+<script>window.viewportUnitsBuggyfill.init({
+  // ignore browser capability, run this puppy everywhere
+  force: true,
+  // milliseconds to delay between updates of viewport-units
+  // caused by orientationchange, pageshow, resize events
+  refreshDebounceWait: 250,
+  hacks: window.viewportUnitsBuggyfillHacks
+});
+</script>
+</body>
+</html>

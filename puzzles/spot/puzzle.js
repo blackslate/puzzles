@@ -64,18 +64,26 @@
     container.onmousedown = container.ontouchstart = startDrag
 
     ;(function createDiscs(){    
-      for (ii=0; ii<5; ii+=1) {
+      for (var ii=0; ii<5; ii+=1) {
         addDisc(ii)
       }
 
       function addDisc(index) {
+        var id = "disc_" + ii
+        var exists = document.querySelector("#" + id)
+
+        if (exists) {
+          console.log("Disc already exists: #" + id)
+          return
+        }
+
         var disc = document.createElementNS(svgNS,"use")
         var translate = translates[ii]
         var transform = "translate("+ translate.x + " " + translate.y +")"
 
         disc.setAttributeNS(xlinkNS, "xlink:href", "#disc")
         disc.setAttribute("transform", transform)
-        disc.setAttribute("id", "disc_" + ii)
+        disc.setAttribute("id", id)
         disc.setAttribute("opacity", "0.9")
 
         container.appendChild(disc)
@@ -85,7 +93,16 @@
     function startDrag(event) {
       event.preventDefault()
       disc = event.target
-      id = disc.id 
+      id = disc.id
+
+      // Workaround for Internet Explorer 11
+      if (!id) {
+        disc = disc.correspondingUseElement
+        if (!disc) {
+          return
+        }
+        id = disc.id
+      }
 
       if (!id || !/disc/.test(id)) {
         return
@@ -415,7 +432,7 @@
         }
 
         function updateSnapLocs() {
-          snapLocs = []
+          snapLocs.length = 0
           var radius = 0 // realRadius / scale
           var loc
           var img
