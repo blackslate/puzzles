@@ -1,4 +1,4 @@
-;(function puzzleManager(window){
+;;(function puzzleManager(window){
   document.body.ontouchstart = function(event) {
     event.preventDefault()
   }
@@ -135,3 +135,52 @@
     }
   }
 })(window)
+
+/**
+ * createSquareArea — workaround for the lack of vmin|vmax support
+ *                    on iOS 7
+ * @param  {object} window   creates minifiable copy of global
+ * @param  {object} document creates minifiable copy of global
+ */
+;(function createSquareArea(window, document) {
+  var main = document.querySelector("main")
+  var nav = document.querySelector("nav")
+  var navWidth = nav.getBoundingClientRect().width
+  var debounceDelay = 100
+  var timeout
+
+  window.onresize = windowResized
+  maintainRatio()
+
+  function windowResized() {
+    if (timeout) {
+      window.clearTimeout(timeout)
+    }
+    timeout = window.setTimeout(maintainRatio, debounceDelay)
+  }
+
+  function maintainRatio() {
+    timeout = 0
+
+    var windowHeight = window.innerHeight
+    var mainWidth = window.innerWidth - navWidth
+    var minDimension = Math.min(windowHeight, mainWidth)
+
+    var left = (mainWidth - minDimension) / 2 + navWidth
+    var top = (windowHeight - minDimension) / 2
+
+    main.style.left = left + "px"
+    main.style.top = top + "px"
+    main.style.width = minDimension + "px"
+    main.style.height = minDimension + "px"
+
+    broadcastEvent("windowResized") // so that puzzles can use it
+  }
+
+  function broadcastEvent(eventName) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Document/createEvent#Notes
+    var event = document.createEvent('Event')
+    event.initEvent(eventName, true, true) // bubbles, cancelable
+    document.dispatchEvent(event)
+  }
+})(window, document)

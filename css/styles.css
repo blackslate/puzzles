@@ -31,21 +31,14 @@ text-align:center;
 overflow: auto;
 }
 main {
-float: left;
-height: 100vmin;
-max-height: calc(100vw - 96px);
-width: calc(100vw - 96px);
+  position: absolute;
 }
 
 article {
 position: relative;
-margin: 0 auto;
 background-color: #000;
 color: #fff;
-height: 100vmin;
-width: 100vmin;
-max-width: 100%;
-max-height: calc(100vw - 96px);
+height: 100%;
 }
 
 nav ul {

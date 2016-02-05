@@ -127,6 +127,19 @@
       svg.ontouchstart = dragSVGs
     })()
 
+    ;(function resizeHeader(){
+      var header = document.querySelector("h1")
+      document.addEventListener("windowResized", windowResized, false)
+
+      function windowResized(event) {
+        var rect = header.getBoundingClientRect()
+        var width = rect.width
+        header.style.fontSize = (width * 0.05) + "px"
+      }
+
+      windowResized()
+    })()
+
     function dragSVGs(event) {
       var svg = event.currentTarget
       var use = svg.childNodes[0]
