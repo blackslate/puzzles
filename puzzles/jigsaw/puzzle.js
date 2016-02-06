@@ -19,8 +19,8 @@
     var body = document.body
     var article = document.querySelector("article")
 
-    var rowCount = 5
-    var colCount = 5
+    var rowCount = 4
+    var colCount = 6
     var pieceCount = rowCount * colCount
     var edgeList = [] // Ensures that no two edges are identical
     var topsList = [] // Ensures that pieces fit with the row above
@@ -36,6 +36,8 @@
     var width
     var height
     var neck
+    var imgWidth
+    var imgHeight
 
     var white = new Image()
     var source = new Image()
@@ -48,8 +50,8 @@
     }
 
     function createPuzzle() {
-      var imgWidth = white.width
-      var imgHeight = white.height
+      imgWidth = source.width
+      imgHeight = source.height
       width = imgWidth / colCount
       height = imgHeight / rowCount
       neck = width / 6
@@ -267,7 +269,11 @@
           piecesList.push(piece)
           imageList.push(image)
 
-          context.drawImage(white, -col*width + neck, -row*height + neck)
+          context.drawImage(
+            white
+          , 0, 0, 1, 1
+          , -col*width + neck, -row*height + neck, imgWidth, imgHeight
+          )
 
           piece.onload = function(){
             // append the new image to the page
@@ -520,7 +526,7 @@
               complete = true
               opacity = 1
               group1.forEach(refreshImage)
-              article.style.backgroundColor = "#fff"
+              // article.style.backgroundColor = "#fff"
               article.classList.add("complete")
             }     
 
