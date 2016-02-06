@@ -1,7 +1,6 @@
-;;(function puzzleManager(window){
-  document.body.ontouchstart = function(event) {
-    event.preventDefault()
-  }
+var openPuzzle
+
+;(function puzzleManager(window){
   document.querySelector("nav").addEventListener(
     "click"
   , showGame
@@ -22,6 +21,10 @@
   var puzzle_js = document.querySelector(".puzzle_js")
   var $main = $("body>main")
 
+  $main.on("touchstart", function(event) {
+    event.preventDefault()
+  })
+
   function showGame(event) {
     var link = event.target // becomes <a> element or undefined
 
@@ -30,28 +33,7 @@
      *   "http://example.com/folder/index.html#puzzleName"
      * @return {string or false}
      */
-    var hash = (function getHash() {
-      // Uses link from closure, and modifies it
-      var notLink = true
-      var index
-
-      // Find <a> element in hierarchy
-      while (link // not undefined
-          && link.tagName // not body
-          && (notLink = link.tagName.toLowerCase() !== "a") // not <a>
-        ) {
-        link = link.parentNode // may now be <a>
-      }
-
-      if (notLink) {
-        hash = false
-      } else {
-        index = link.href.indexOf("#") + 1
-        hash = link.href.substring(index)
-      }
-
-      return hash
-    })()
+    var hash = getHash(link)
 
     if (!hash) {
       // The click was on a nav sub-element above the <a> element
@@ -134,6 +116,51 @@
       puzzleObject.initialize()
     }
   }
+
+  function getHash(link) {
+    // Uses link from closure, and modifies it
+    var notLink = true
+    var index
+
+    // Find <a> element in hierarchy
+    while (link // not undefined
+        && link.tagName // not body
+        && (notLink = link.tagName.toLowerCase() !== "a") // not <a>
+      ) {
+      link = link.parentNode // may now be <a>
+    }
+
+    if (notLink) {
+      hash = false
+    } else {
+      index = link.href.indexOf("#") + 1
+      hash = link.href.substring(index)
+    }
+
+    return hash
+  }
+
+  function openPuzzle(gameName) {
+    var links = [].slice.call(document.querySelectorAll("nav a"))
+    var hash
+      , success
+
+    while (gameName.charAt(0) === "#") {
+      gameName = gameName.substring(1)
+    }
+
+    links.every(function (link) {
+      hash = getHash(link)
+      if (hash === gameName) {
+        success = showGame({ target: link })
+        return false
+      }
+
+      return true
+    })
+  }
+
+  openPuzzle(window.location.hash)
 })(window)
 
 /**

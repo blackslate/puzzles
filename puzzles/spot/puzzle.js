@@ -10,7 +10,6 @@
   }
 
   Puzzle.prototype.initialize = function initialize() {
-    console.log("Puzzle '" + this.name + "' initialized")
     var body = document.body
     var article = document.querySelector("article")
     var h1 = document.querySelector("h1")
@@ -63,6 +62,18 @@
 
     container.onmousedown = container.ontouchstart = startDrag
 
+    ;(function resizeHeader(){
+      document.addEventListener("windowResized", windowResized, false)
+
+      function windowResized(event) {
+        var rect = h1.getBoundingClientRect()
+        var width = rect.width
+        h1.style.fontSize = (width * 0.05) + "px"
+      }
+
+      windowResized()
+    })()
+
     ;(function createDiscs(){    
       for (var ii=0; ii<5; ii+=1) {
         addDisc(ii)
@@ -91,7 +102,7 @@
     })()
 
     function startDrag(event) {
-      event.preventDefault()
+      // event.preventDefault()
       disc = event.target
       id = disc.id
 
@@ -249,9 +260,10 @@
         var d2 = dX * dX + dY * dY
         var radians = Math.atan2(dX, -dY) // 0 at 12 o'clock > ± π
 
-        if (Math.abs(d2 - outer2) < 10) { // typically < 0.01
+        // Difference set to 100 for Internet Explorer 11
+        if (Math.abs(d2 - outer2) < 100) { // typically < 0.01
           defineOuterPositions()
-        } else if (Math.abs(d2 - inner2) < 10){
+        } else if (Math.abs(d2 - inner2) < 100){
           defineInnerPositions()
         } else {
           // This should never happen

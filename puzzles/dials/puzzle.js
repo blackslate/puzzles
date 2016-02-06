@@ -44,10 +44,6 @@ function puzzleLoaded(reloaded) {}
     paths.forEach(function (path) {
       path.parentNode.removeChild(path)
     })
-    
-    body.ontouchstart = function (event) {
-      event.preventDefault()
-    }
 
     ;(function createDials(){
       var radius = width

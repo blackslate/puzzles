@@ -559,7 +559,7 @@
     })() 
 
     white.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///////9VfPVsAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8xNC8xNQkEnNcAAAAqSURBVHic7cExAQAAAMKg9U/tbwagAAAAAAAAAAAAAAAAAAAAAAAAAIA3T7AAATkWl3gAAAAASUVORK5CYII="
-    source.src = "puzzles/jigsaw/img/puzzle.png"
+    source.src = "puzzles/jigsaw/img/castle6x4@80.jpg"
   }
 
   Puzzle.prototype.kill = function kill() {

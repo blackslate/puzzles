@@ -9,6 +9,7 @@ h1 {
   margin:0;
   pointer-events: none;
   z-index:1;
+  font-size: 0px;
 }
 svg.container {
   height: 100%;     
