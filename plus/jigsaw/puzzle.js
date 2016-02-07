@@ -15,12 +15,11 @@
   }
 
   Puzzle.prototype.initialize = function initialize() {
-    console.log("Puzzle '" + this.name + "' initialized")
     var body = document.body
     var article = document.querySelector("article")
 
-    var rowCount = 4
-    var colCount = 6
+    var rowCount = 5
+    var colCount = 5
     var pieceCount = rowCount * colCount
     var edgeList = [] // Ensures that no two edges are identical
     var topsList = [] // Ensures that pieces fit with the row above
@@ -353,26 +352,33 @@
     function placePiecesRandomly() {
       var width = article.offsetWidth
       var height = article.offsetHeight
-      var ratio = width / height
-      var across
-        , down
-        , extra
-        , space
-        , random
+      // var ratio = width / height
+      var across = 5
+      var down = 5
+      var extra = 0
+      var space
+        , random // []
         , index
         , piece
+        , place
 
-      if (ratio > 2) {
-        across = 7; down = 3; extra = 4
-      } else if (ratio > 1.33) {
-        across = 6; down = 4; extra = 1
-      } else if (ratio > 0.75) {
-        across = 5; down = 5; extra = 0
-      } else if (ratio > 0.5) {
-        across = 4; down = 6; extra = 1
-      } else {
-        across = 3; down = 7; extra = 4
+      var edgeSpace = 2 // a 6 x 4 jigsaw will fit in a 8 x 6 space
+      var widthRatio = (width/(colCount + edgeSpace))/imgWidth
+      var heightRatio = (height/(rowCount + edgeSpace))/imgHeight
+      if (widthRatio > heightRatio) {
+        widthRatio = heightRatio
       }
+      // if (ratio > 2) {
+      //   across = 7; down = 3; extra = 4
+      // } else if (ratio > 1.33) {
+      //   across = 6; down = 4; extra = 1
+      // } else if (ratio > 0.75) {
+      //   across = 5; down = 5; extra = 0
+      // } else if (ratio > 0.5) {
+      //   across = 4; down = 6; extra = 1
+      // } else {
+      //   across = 3; down = 7; extra = 4
+      // }
 
       space = Math.min(width / (across + 2), height / (down + 2))
       random = getRandomIndexArray()
@@ -390,8 +396,13 @@
       function placePiece() {
         index = random.pop()
         piece = piecesList[index]
-        piece.style.top = (row + Math.random()) * space + "px"
-        piece.style.left = (col + Math.random()) * space + "px"
+        piece.style.top = getRandomPercentage()
+        piece.style.left = getRandomPercentage()
+        piece.style.width = (widthRatio * 100) + "%"
+      }
+
+      function getRandomPercentage() {
+        return (Math.random() * (1 - widthRatio) * 100) + "%"
       }
 
       function getRandomIndexArray() {
@@ -416,15 +427,9 @@
     }
     
     ;(function play(){
-      body.ontouchstart = function (event) {
-        event.preventDefault()
-      }
-
       article.onmousedown = article.ontouchstart = startDrag
         
       function startDrag(event) {
-        event.preventDefault()
-
         var target = event.target
         if (target.nodeName.toLowerCase() !== "img") {
           return
@@ -438,7 +443,6 @@
         var clickY = event.pageY
         var startXs = {}
         var startYs = {}
-
 
         ;(function setStartXAndY(){
           var id
@@ -468,6 +472,7 @@
             , deltaY
             , delta2
 
+          // Check connections to neighbours
           piecesList.forEach(function (piece) {
             if (!complete) {
               if (piece !== target) {
@@ -484,8 +489,6 @@
                 }
               }
             }
-
-            //piece.style.zIndex = 0
           })
 
           body.onmousemove = body.ontouchmove = null
@@ -565,7 +568,7 @@
     })() 
 
     white.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQAQMAAAC6caSPAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///////9VfPVsAAAACXBIWXMAAAsSAAALEgHS3X78AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABZ0RVh0Q3JlYXRpb24gVGltZQAxMC8xNC8xNQkEnNcAAAAqSURBVHic7cExAQAAAMKg9U/tbwagAAAAAAAAAAAAAAAAAAAAAAAAAIA3T7AAATkWl3gAAAAASUVORK5CYII="
-    source.src = "puzzles/jigsaw/img/castle6x4@80.jpg"
+    source.src = "puzzles/jigsaw/img/castle5x5@70.jpg"
   }
 
   Puzzle.prototype.kill = function kill() {

@@ -20,20 +20,27 @@ var openPuzzle
   var puzzle_css = document.querySelector(".puzzle_css")
   var puzzle_js = document.querySelector(".puzzle_js")
   var $main = $("body>main")
+  var isIPhone =navigator.userAgent.toLowerCase().indexOf("iphone")>-1
+  var link
 
   $main.on("touchstart", function(event) {
     event.preventDefault()
   })
 
+  if (isIPhone) {
+    var simpleLink = document.querySelector("li a[href='#simple']")
+    simpleLink.style.display = "none"
+  }
+
   function showGame(event) {
-    var link = event.target // becomes <a> element or undefined
+    link = event.target // becomes <a> element or undefined
 
     /**
      * Extracts "puzzleName" from the link the user clicked, e.g.
      *   "http://example.com/folder/index.html#puzzleName"
      * @return {string or false}
      */
-    var hash = getHash(link)
+    var hash = getHash()
 
     if (!hash) {
       // The click was on a nav sub-element above the <a> element
@@ -117,10 +124,14 @@ var openPuzzle
     }
   }
 
-  function getHash(link) {
+  function getHash(externalLink) {
     // Uses link from closure, and modifies it
     var notLink = true
     var index
+
+    if (externalLink) {
+      link = externalLink
+    }
 
     // Find <a> element in hierarchy
     while (link // not undefined
