@@ -1,12 +1,12 @@
 CACHE MANIFEST
-# 20160208-2025: v0
+# 20160208-1530: v0
 
 CACHE:
 index.html
 css/styles.css
 js/script.js
 
-http://code.jquery.com/jquery-2.1.4.js
+http://code.jquery.com/jquery-2.1.4.min.js
 
 puzzles/button/icon.png
 puzzles/button/puzzle.css
