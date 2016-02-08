@@ -527,7 +527,6 @@
 
   Puzzle.prototype.kill = function kill() {
     // Clean up when puzzle is about to be replaced
-    console.log("Puzzle '" + this.name + "' killed")
   }
 
   if (typeof puzzle.hash === "string") {
