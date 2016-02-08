@@ -22,12 +22,16 @@
   var link
 
   $main.on("touchstart", function(event) {
-    event.preventDefault()
+    event.preventDefault
+      ? event.preventDefault()
+      : (event.returnValue = false)
   })
 
   if (isIPhone) {
     var simpleLink = document.querySelector("li a[href='#simple']")
-    simpleLink.style.display = "none"
+    if (simpleLink) {
+      simpleLink.style.display = "none"
+    }
   }
 
   function showGame(event) {
