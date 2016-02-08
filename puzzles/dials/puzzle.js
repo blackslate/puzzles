@@ -24,6 +24,9 @@ function puzzleLoaded(reloaded) {}
     var width = 100
     var radius = width / 2
 
+    // Shared for getPageLoc() utility
+    var pageLoc
+
     // Rotation properties 
     var pX // centre of page
     var pY
@@ -335,10 +338,11 @@ function puzzleLoaded(reloaded) {}
       pX = rect.left + rect.width / 2
       pY = rect.top + rect.height / 2
       scale = cX / pX
-   
+      pageLoc = getPageLoc(event)
+
       var turnBallWithRing = (barPoints[0].ring === index)
-      var deltaX = event.pageX - pX
-      var deltaY = event.pageY - pY  
+      var deltaX = pageLoc.x - pX
+      var deltaY = pageLoc.y - pY  
       var startRadians = rotations[index] // current value
       var startDegrees = startRadians * degreesPerRadian
       // Adjust for angle with click position
@@ -350,8 +354,9 @@ function puzzleLoaded(reloaded) {}
       body.onmouseup = body.ontouchend = stopDrag
     
       function drag(event) {
-        deltaX = event.pageX - pX
-        deltaY = event.pageY - pY
+        pageLoc = getPageLoc(event)
+        deltaX = pageLoc.x - pX
+        deltaY = pageLoc.y - pY
 
         currentRadians = getRadians(deltaX, deltaY, startRadians)
         rotations[index] = currentRadians
@@ -426,8 +431,9 @@ function puzzleLoaded(reloaded) {}
     }
 
     function startSlide(event, target) {
-      var clickX = event.pageX
-      var clickY = event.pageY
+      pageLoc = getPageLoc(event)
+      var clickX = pageLoc.x
+      var clickY = pageLoc.y
       var index = bars.indexOf(target)
 
       var barPoint = barPoints[index]
@@ -481,8 +487,9 @@ function puzzleLoaded(reloaded) {}
       })()
     
       function drag(event) {
-        deltaX = (event.pageX - clickX) * scale
-        deltaY = (clickY - event.pageY) * scale
+        pageLoc = getPageLoc(event)
+        deltaX = (pageLoc.x - clickX) * scale
+        deltaY = (clickY - pageLoc.y) * scale
         delta  = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
         deltaAngle = Math.abs(Math.atan2(deltaX, deltaY) - radians)
         out = Math.cos(deltaAngle) * delta
@@ -594,7 +601,6 @@ function puzzleLoaded(reloaded) {}
       pX = rect.left + rect.width / 2
       pY = rect.top + rect.height / 2
       scale = cX / (pX - rect.left)
-      console.log(pX, cX, scale)
     }
 
   }

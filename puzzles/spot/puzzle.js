@@ -60,6 +60,13 @@
       , id
       , combinations
 
+    body.addEventListener("touchmove", logEvent, false)
+    body.addEventListener("touchend", logEvent, false)
+
+    function logEvent(event) {
+      console.log(event.type, event)
+    }
+
     container.onmousedown = container.ontouchstart = startDrag
 
     ;(function resizeHeader(){
@@ -103,6 +110,7 @@
 
     function startDrag(event) {
       // event.preventDefault()
+      var pageLoc = getPageLoc(event)
       disc = event.target
       id = disc.id
 
@@ -127,8 +135,8 @@
 
       var snapIndex = -1
       var index = getDiscIndex(id)
-      var clickX = event.pageX
-      var clickY = event.pageY
+      var clickX = pageLoc.x
+      var clickY = pageLoc.y
 
       // PAGE COORDINATES
       // Get centre of spot with current page scroll
@@ -149,9 +157,14 @@
       body.onmousemove = body.ontouchmove = dragDisc
       body.onmouseup = body.ontouchend = stopDrag
 
+      console.log("STARTDRAG", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
+
       function dragDisc(event) {
+
+      console.log("DRAGDISC", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
+
         var snapIndex = -1
-        var pageLoc = { x: event.pageX, y: event.pageY}
+        var pageLoc = getPageLoc(event)
         if (!snapLocs.length) {
           snapFirst(pageLoc)
         } else {
@@ -227,6 +240,8 @@
 
       function stopDrag(event) {
         body.onmousemove = body.ontouchmove = body.onmouseup = body.ontouchend = null
+
+      console.log("STOPDRAG", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
 
         if (!translateX) {
           // Click and release: No ...move() event was triggered

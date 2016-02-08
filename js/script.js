@@ -1,5 +1,3 @@
-var openPuzzle
-
 ;(function puzzleManager(window){
   document.querySelector("nav").addEventListener(
     "click"
@@ -222,3 +220,21 @@ var openPuzzle
     document.dispatchEvent(event)
   }
 })(window, document)
+
+/**
+ * Utility method
+ * @param  {mouse event|touch event} event [description]
+ * @return {object}       { x: <...pageX>, y: <...pageY> }
+ */
+function getPageLoc(event) {
+  var pageLoc = {}
+  if (isNaN(event.pageX)) {          
+    pageLoc.x = event.targetTouches[0].pageX
+    pageLoc.y = event.targetTouches[0].pageY
+  } else {          
+    pageLoc.x = event.pageX
+    pageLoc.y = event.pageY
+  }
+
+  return pageLoc
+}
