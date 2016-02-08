@@ -197,10 +197,11 @@
 
   function maintainRatio() {
     timeout = 0
+    var tweak = 6 // to avoid showing scrollbars unnecessarily
 
     var windowHeight = window.innerHeight
     var mainWidth = window.innerWidth - navWidth
-    var minDimension = Math.min(windowHeight, mainWidth)
+    var minDimension = Math.min(windowHeight, mainWidth) - tweak
 
     var left = (mainWidth - minDimension) / 2 + navWidth
     var top = (windowHeight - minDimension) / 2
