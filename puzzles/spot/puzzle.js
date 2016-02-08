@@ -60,13 +60,6 @@
       , id
       , combinations
 
-    body.addEventListener("touchmove", logEvent, false)
-    body.addEventListener("touchend", logEvent, false)
-
-    function logEvent(event) {
-      console.log(event.type, event)
-    }
-
     container.onmousedown = container.ontouchstart = startDrag
 
     ;(function resizeHeader(){
@@ -91,15 +84,20 @@
         var exists = document.querySelector("#" + id)
 
         if (exists) {
-          console.log("Disc already exists: #" + id)
+          // console.log("Disc already exists: #" + id)
           return
         }
 
-        var disc = document.createElementNS(svgNS,"use")
+        var disc = document.createElementNS(svgNS,"circle")
         var translate = translates[ii]
         var transform = "translate("+ translate.x + " " + translate.y +")"
 
-        disc.setAttributeNS(xlinkNS, "xlink:href", "#disc")
+        // <circle cx="122" cy="122" r="122" fill="url(#radial)"/>
+        disc.setAttribute("cx", 122)
+        disc.setAttribute("cy", 122)
+        disc.setAttribute("r", 122)
+        disc.setAttribute("fill", "url(#radial)")
+
         disc.setAttribute("transform", transform)
         disc.setAttribute("id", id)
         disc.setAttribute("opacity", "0.9")
@@ -157,12 +155,7 @@
       body.onmousemove = body.ontouchmove = dragDisc
       body.onmouseup = body.ontouchend = stopDrag
 
-      console.log("STARTDRAG", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
-
       function dragDisc(event) {
-
-      console.log("DRAGDISC", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
-
         var snapIndex = -1
         var pageLoc = getPageLoc(event)
         if (!snapLocs.length) {
@@ -240,8 +233,6 @@
 
       function stopDrag(event) {
         body.onmousemove = body.ontouchmove = body.onmouseup = body.ontouchend = null
-
-      console.log("STOPDRAG", "container.onmousedown: " + (typeof document.querySelector(".container").onmousedown === "function"), "body.ontouchmove: " + (typeof document.body.ontouchmove === "function"), "body.ontouchend: " + (typeof document.body.ontouchend === "function"))
 
         if (!translateX) {
           // Click and release: No ...move() event was triggered
@@ -490,7 +481,7 @@
         , top
         , size
 
-      console.log(positions)
+      // console.log(positions)
 
       // <image xlink:href="firefox.jpg" x="0" y="0" height="50px" width="50px"/>
       for (var ii = 0; ii < 5; ii += 1){
