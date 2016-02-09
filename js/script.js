@@ -19,14 +19,17 @@
   var puzzle_js = document.querySelector(".puzzle_js")
   var $main = $("body>main")
   var isIPhone =navigator.userAgent.toLowerCase().indexOf("iphone")>-1
+  var links = [].slice.call(document.querySelectorAll("nav a"))
   var link
 
+  // Prevent the user from moving and resizing by mistake on a mobile
   $main.on("touchstart", function(event) {
     event.preventDefault
       ? event.preventDefault()
       : (event.returnValue = false)
   })
 
+  // Disable puzzles which don't work on the current platform
   if (isIPhone) {
     var simpleLink = document.querySelector("li a[href='#simple']")
     if (simpleLink) {
@@ -34,6 +37,26 @@
     }
   }
 
+  // Check which puzzles the user has already solved
+  ;(function showPlayedGames(){
+    var playedMap = { button: 0, dials: 1 } // started = 0, done = 1
+    var hash
+      , status
+
+    links.forEach(function checkStatus(link) {
+      hash = getHash(link)
+      status = playedMap[hash]
+      if (!isNaN (status)) {
+        if (status) {
+          link.classList.add("done")
+        } else {
+          link.classList.add("started")
+        }
+      }
+    })
+  })()
+
+  // Load the chosen game
   function showGame(event) {
     link = event.target // becomes <a> element or undefined
 
@@ -54,7 +77,7 @@
     // Mozilla doesn't allow modifications to sub-elements for
     // privacy reasons:
     // https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector
-    link.classList.add("done")
+    link.classList.add("started")
 
     // CLEAN UP EXISTING PUZZLE IF THERE IS ONE
     if (puzzleObject && puzzleObject.kill) {
@@ -153,8 +176,8 @@
     return hash
   }
 
-  function openPuzzle(gameName) {
-    var links = [].slice.call(document.querySelectorAll("nav a"))
+  // Lead the game defined by the window.location.hash, if it exists
+  function openGame(gameName) {
     var hash
       , success
 
@@ -162,7 +185,7 @@
       gameName = gameName.substring(1)
     }
 
-    links.every(function (link) {
+    links.every(function showMatchingGame(link) {
       hash = getHash(link)
       if (hash === gameName) {
         success = showGame({ target: link })
@@ -173,7 +196,7 @@
     })
   }
 
-  openPuzzle(window.location.hash)
+  openGame(window.location.hash)
 })(window)
 
 /**
