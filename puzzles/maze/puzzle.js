@@ -431,7 +431,7 @@ function puzzleLoaded(){
 
     function moveMouse(event) {
       body.onmousemove = body.ontouchmove = moveMouse
-      body.onmouseup = function () {
+      body.onmouseup = body.ontouchend = function () {
         body.onmousemove = body.onmouseup = body.ontouchmove = body.ontouchend = null
       }
     
@@ -457,6 +457,12 @@ function puzzleLoaded(){
           // Can't move within column
         } else {       
           moveToRow(r)
+        }
+      } else if (row === 8 && column === 9 && c) {
+        // At the mouth of the cheese cell
+        if (r === 7 && (c === 7 || c === 8)) {
+          // Move in diagonally
+          moveMouseTo(r, c)
         }
       }
 
@@ -493,7 +499,7 @@ function puzzleLoaded(){
       }
 
       function moveMouseTo(r, c) {  
-        if (r === 8 && (c === 8 || c === 7)) {
+        if ((r === 7 || r === 8 ) && (c === 7 || c === 8)) {
           return winningPosition()
 
         } else if (counter > 20) {
@@ -509,7 +515,7 @@ function puzzleLoaded(){
           }
         } else if (row > r) {
           rotation = 180
-        }
+        } 
 
         column = c
         row = r
