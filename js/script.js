@@ -1,4 +1,7 @@
 ;(function puzzleManager(window){
+  var STORAGE_NAME = "goMap"
+  var CLASSES = { started: "started", todo: "todo" }
+
   document.querySelector("nav").addEventListener(
     "click"
   , showGame
@@ -11,6 +14,7 @@
   window.puzzle = {
     map: {}
   , hash: ""
+  , completed: puzzleCompleted
   }
 
   var puzzleObject
@@ -21,6 +25,15 @@
   var isIPhone =navigator.userAgent.toLowerCase().indexOf("iphone")>-1
   var links = [].slice.call(document.querySelectorAll("nav a"))
   var link
+  var playedMap
+
+  try {
+    playedMap = JSON.parse(localStorage[STORAGE_NAME])
+  } catch(error) {}
+
+  if (!playedMap) {
+    playedMap = {}
+  }
 
   // Prevent the user from moving and resizing by mistake on a mobile
   $main.on("touchstart", function(event) {
@@ -39,22 +52,32 @@
 
   // Check which puzzles the user has already solved
   ;(function showPlayedGames(){
-    var playedMap = { button: 0, dials: 1 } // started = 0, done = 1
+    if (!window.localStorage) {
+      return
+    }
+
+    // { button: 0, dials: 1 } // started = 0, done = 1
     var hash
       , status
 
     links.forEach(function checkStatus(link) {
       hash = getHash(link)
-      status = playedMap[hash]
-      if (!isNaN (status)) {
-        if (status) {
-          link.classList.add("done")
-        } else {
-          link.classList.add("started")
-        }
-      }
+      status = playedMap[hash] // undefined | 0 | 1
+      showStatus(link, status)
     })
   })()
+
+  function showStatus(link, status) {
+    if (isNaN (status)) {
+        link.classList.add(CLASSES.todo)
+    } else if (status) {
+      link.classList.remove(CLASSES.todo)
+      link.classList.remove(CLASSES.started)
+    } else {
+      link.classList.remove(CLASSES.todo)
+      link.classList.add(CLASSES.started)
+    }
+  }
 
   // Load the chosen game
   function showGame(event) {
@@ -72,12 +95,8 @@
       return
     }
 
-    // CHANGE APPEARANCE OF LINK IMAGE
-    // HACK: change class to show that it's been visited
-    // Mozilla doesn't allow modifications to sub-elements for
-    // privacy reasons:
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector
-    link.classList.add("started")
+    var status = updatePlayedStatus(hash, 0) // 0 | 1
+    showStatus(link, status)
 
     // CLEAN UP EXISTING PUZZLE IF THERE IS ONE
     if (puzzleObject && puzzleObject.kill) {
@@ -112,9 +131,9 @@
         checkIfAllIsLoaded()
       }
 
-      function done(event) {
+      function elementLoaded(event) {
         var element = event.target
-        element.removeEventListener("load", done, false)
+        element.removeEventListener("load", elementLoaded, false)
         checkIfAllIsLoaded()
       }
 
@@ -132,21 +151,38 @@
       }
 
       function swapFile(current, type, attribute, path) {
-        var temp = document.createElement(type)
-        current.parentNode.replaceChild(temp, current)
-        temp.addEventListener("load", done, false)
+        var element = document.createElement(type)
+        current.parentNode.replaceChild(element, current)
+        element.addEventListener("load", elementLoaded, false)
         if (type === "link") {
-          temp.setAttribute("rel", "stylesheet")
-          temp.setAttribute("type", "text/css")
+          element.setAttribute("rel", "stylesheet")
+          element.setAttribute("type", "text/css")
         }
-        temp.setAttribute(attribute, path)
-        return temp
+        element.setAttribute(attribute, path)
+
+        return element
       }
     }
 
     function reloadPuzzle() {
       puzzleObject.initialize()
     }
+  }
+
+  function updatePlayedStatus(hash, newStatus) {
+    var currentStatus = playedMap[hash]
+    if (currentStatus) {
+      // Ignore a newStatus of 0
+      return currentStatus
+    }
+
+    if (currentStatus !== newStatus) {
+      playedMap[hash] = newStatus
+    }
+
+    localStorage[STORAGE_NAME] = JSON.stringify(playedMap)
+
+    return newStatus
   }
 
   function getHash(externalLink) {
@@ -176,24 +212,41 @@
     return hash
   }
 
-  // Lead the game defined by the window.location.hash, if it exists
-  function openGame(gameName) {
-    var hash
-      , success
+  function getLink(hash) {
+    var link
 
-    while (gameName.charAt(0) === "#") {
-      gameName = gameName.substring(1)
-    }
-
-    links.every(function showMatchingGame(link) {
-      hash = getHash(link)
-      if (hash === gameName) {
-        success = showGame({ target: link })
+    links.every(function showMatchingGame(testLink) {
+      if (hash === getHash(testLink)) {
+        link = testLink
         return false
       }
 
       return true
     })
+
+    return link
+  }
+
+  function puzzleCompleted(hash) {
+    var link = getLink(hash)
+
+    updatePlayedStatus(hash, 1)
+    showStatus(link, 1)
+  }
+
+  // Lead the game defined by the window.location.hash, if it exists
+  function openGame(hash) {
+    var link
+
+    while (hash.charAt(0) === "#") {
+      hash = hash.substring(1)
+    }
+
+    link = getLink(hash)
+
+    if (link) {
+      showGame({ target: link })
+    }
   }
 
   openGame(window.location.hash)
@@ -266,3 +319,4 @@ function getPageLoc(event) {
 
   return pageLoc
 }
+

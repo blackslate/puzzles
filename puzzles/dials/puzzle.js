@@ -299,9 +299,7 @@ function puzzleLoaded(reloaded) {}
           svgElement.setAttribute("class", baseVal)
         }
       }
-    }
-        
-        
+    }      
 
     svg.onmousedown = svg.ontouchstart = startDrag
       
@@ -594,6 +592,8 @@ function puzzleLoaded(reloaded) {}
       })
       bars[0].setAttributeNS(null,"style","fill:#090")
       document.querySelector("svg.puzzle circle").setAttributeNS(null,"style","fill:"+green)
+
+      puzzle.completed(puzzle.hash)
     }
 
     function setScale() {

@@ -501,6 +501,8 @@
 
       h1.innerHTML = "Time heals all wounds"
       article.removeChild(container)
+
+      puzzle.completed(puzzle.hash)
     }
 
     var canvas = document.createElement("canvas")

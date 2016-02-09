@@ -540,6 +540,8 @@ function puzzleLoaded(){
         document.querySelector("#walls").setAttribute("fill", color)
 
         svg.onmousedown = body.onmousemove = body.onmouseup = body.ontouchmove = body.ontouchend = null
+
+        puzzle.completed(puzzle.hash)
       }
 
       function lose() {

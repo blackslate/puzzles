@@ -51,28 +51,28 @@ padding: 8px 0;
 }
 
 nav a img {
--webkit-filter: drop-shadow(0px 0px 8px #fff);
--moz-filter: drop-shadow(0px 0px 8px #fff);
--ms-filter: drop-shadow(0px 0px 8px #fff);
--o-filter: drop-shadow(0px 0px 8px #fff);
-filter: drop-shadow(0px 0px 8px #fff);
+-webkit-filter: none;
+-moz-filter: none;
+-o-filter: none;
+filter: none;
 position: relative;
 width: 64px;
 }
 
 nav a.started img{
--webkit-filter: none;
--moz-filter: none;
--o-filter: none;
-filter: none;
+-webkit-filter: drop-shadow(0px 0px 1px #fff);
+-moz-filter: drop-shadow(0px 0px 1px #fff);
+-ms-filter: drop-shadow(0px 0px 1px #fff);
+-o-filter: drop-shadow(0px 0px 1px #fff);
+filter: drop-shadow(0px 0px 1px #fff);
 }
 
-nav a.done img{
--webkit-filter: drop-shadow(0px 0px 3px #f90);
--moz-filter: drop-shadow(0px 0px 3px #f90);
--ms-filter: drop-shadow(0px 0px 3px #f90);
--o-filter: drop-shadow(0px 0px 3px #f90);
-filter: drop-shadow(0px 0px 3px #f90);
+nav a.todo img{
+-webkit-filter: drop-shadow(0px 0px 8px #fff);
+-moz-filter: drop-shadow(0px 0px 8px #fff);
+-ms-filter: drop-shadow(0px 0px 8px #fff);
+-o-filter: drop-shadow(0px 0px 8px #fff);
+filter: drop-shadow(0px 0px 8px #fff);
 }
 
 nav a {

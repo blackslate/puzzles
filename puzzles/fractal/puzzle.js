@@ -306,6 +306,8 @@
         parent.ontouchstart = null
         document.body.ontouchmove = null
         document.body.ontouchend = null
+
+        puzzle.completed(puzzle.hash)
       }
     }
   }

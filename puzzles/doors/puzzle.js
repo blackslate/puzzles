@@ -100,12 +100,12 @@
       windowResized()
     })()
 
-    ;(function (){
-      var use = document.querySelectorAll("svg>use")
-      for (var ii = 0, door; door = use[ii]; ii += 1) {
-        doors.push(door)
-      }
-    })()
+    // ;(function (){
+      var doors = [].slice.call(document.querySelectorAll("svg>use"))
+    //   for (var ii = 0, door; door = use[ii]; ii += 1) {
+    //     doors.push(door)
+    //   }
+    // })()
 
     article.onmouseup = article.ontouchend = openDoors
 
@@ -172,8 +172,10 @@
           door.style.opacity = String(opacity)
         }
 
-        if (opacity > 0) {
+        if (opacity > 0.01) {
           setTimeout(fadeToWhite, 20)
+        } else {
+          puzzle.completed(puzzle.hash)
         }
       })()
     }

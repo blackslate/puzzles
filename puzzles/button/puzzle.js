@@ -18,6 +18,7 @@
     red.classList.remove("show")
     
     svg.onmouseup = svg.ontouchstart = pressButton
+    div.addEventListener("transitionend", puzzleComplete, false)
    
     function pressButton(event) {
       var rect = svg.getBoundingClientRect()
@@ -39,6 +40,10 @@
       setTimeout(function () {
         red.classList.remove("show")
       }, 40)
+    }
+
+    function puzzleComplete(event) {
+      puzzle.completed(puzzle.hash)
     }
   }
 
