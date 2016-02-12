@@ -141,11 +141,11 @@
     })()
 
     function dragSVGs(event) {
-      var pageLoc = getPageLoc(event)
+      var clientLoc = getClientLoc(event)
       var svg = event.currentTarget
       var use = svg.childNodes[0]
-      var x = pageLoc.x
-      var y = pageLoc.y
+      var x = clientLoc.x
+      var y = clientLoc.y
       var hit
 
       // Fix for FireFox 40.0.3, which has no svg.checkIntersection()
@@ -199,9 +199,9 @@
       function movePentagon(event) {
         // Move the clicked pentagon with the mouse, and all its 
         // children relatively
-        pageLoc = getPageLoc(event)
-        var offsetX = pageLoc.x - x
-        var offsetY = pageLoc.y - y
+        clientLoc = getClientLoc(event)
+        var offsetX = clientLoc.x - x
+        var offsetY = clientLoc.y - y
         var deltaX = 0
         var deltaY = 0
         var delta = Math.sqrt(offsetX * offsetX + offsetY * offsetY)

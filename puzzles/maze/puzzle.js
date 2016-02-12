@@ -436,9 +436,9 @@ function puzzleLoaded(){
       }
     
       setScale()
-      var pageLoc = getPageLoc(event)
-      var x = (pageLoc.x - xAdjust) * scale
-      var y = (pageLoc.y - yAdjust) * scale
+      var clientLoc = getClientLoc(event)
+      var x = (clientLoc.x - xAdjust) * scale
+      var y = (clientLoc.y - yAdjust) * scale
       var r = Math.floor(y / 10)
       var c = Math.floor(x / 10)
 

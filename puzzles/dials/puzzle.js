@@ -24,8 +24,8 @@ function puzzleLoaded(reloaded) {}
     var width = 100
     var radius = width / 2
 
-    // Shared for getPageLoc() utility
-    var pageLoc
+    // Shared for getClientLoc() utility
+    var clientLoc
 
     // Rotation properties 
     var pX // centre of page
@@ -336,11 +336,11 @@ function puzzleLoaded(reloaded) {}
       pX = rect.left + rect.width / 2
       pY = rect.top + rect.height / 2
       scale = cX / pX
-      pageLoc = getPageLoc(event)
+      clientLoc = getClientLoc(event)
 
       var turnBallWithRing = (barPoints[0].ring === index)
-      var deltaX = pageLoc.x - pX
-      var deltaY = pageLoc.y - pY  
+      var deltaX = clientLoc.x - pX
+      var deltaY = clientLoc.y - pY  
       var startRadians = rotations[index] // current value
       var startDegrees = startRadians * degreesPerRadian
       // Adjust for angle with click position
@@ -352,9 +352,9 @@ function puzzleLoaded(reloaded) {}
       body.onmouseup = body.ontouchend = stopDrag
     
       function drag(event) {
-        pageLoc = getPageLoc(event)
-        deltaX = pageLoc.x - pX
-        deltaY = pageLoc.y - pY
+        clientLoc = getClientLoc(event)
+        deltaX = clientLoc.x - pX
+        deltaY = clientLoc.y - pY
 
         currentRadians = getRadians(deltaX, deltaY, startRadians)
         rotations[index] = currentRadians
@@ -429,9 +429,9 @@ function puzzleLoaded(reloaded) {}
     }
 
     function startSlide(event, target) {
-      pageLoc = getPageLoc(event)
-      var clickX = pageLoc.x
-      var clickY = pageLoc.y
+      clientLoc = getClientLoc(event)
+      var clickX = clientLoc.x
+      var clickY = clientLoc.y
       var index = bars.indexOf(target)
 
       var barPoint = barPoints[index]
@@ -485,9 +485,9 @@ function puzzleLoaded(reloaded) {}
       })()
     
       function drag(event) {
-        pageLoc = getPageLoc(event)
-        deltaX = (pageLoc.x - clickX) * scale
-        deltaY = (clickY - pageLoc.y) * scale
+        clientLoc = getClientLoc(event)
+        deltaX = (clientLoc.x - clickX) * scale
+        deltaY = (clickY - clientLoc.y) * scale
         delta  = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
         deltaAngle = Math.abs(Math.atan2(deltaX, deltaY) - radians)
         out = Math.cos(deltaAngle) * delta

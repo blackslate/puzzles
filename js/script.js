@@ -307,16 +307,16 @@
  * @param  {mouse event|touch event} event [description]
  * @return {object}       { x: <...pageX>, y: <...pageY> }
  */
-function getPageLoc(event) {
-  var pageLoc = {}
-  if (isNaN(event.pageX)) {          
-    pageLoc.x = event.targetTouches[0].pageX
-    pageLoc.y = event.targetTouches[0].pageY
+function getClientLoc(event) {
+  var clientLoc = {}
+  if (isNaN(event.clientX)) {          
+    clientLoc.x = event.targetTouches[0].clientX
+    clientLoc.y = event.targetTouches[0].clientY
   } else {          
-    pageLoc.x = event.pageX
-    pageLoc.y = event.pageY
+    clientLoc.x = event.clientX
+    clientLoc.y = event.clientY
   }
 
-  return pageLoc
+  return clientLoc
 }
 

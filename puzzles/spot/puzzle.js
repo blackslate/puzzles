@@ -108,7 +108,7 @@
 
     function startDrag(event) {
       // event.preventDefault()
-      var pageLoc = getPageLoc(event)
+      var clientLoc = getClientLoc(event)
       disc = event.target
       id = disc.id
 
@@ -133,8 +133,8 @@
 
       var snapIndex = -1
       var index = getDiscIndex(id)
-      var clickX = pageLoc.x
-      var clickY = pageLoc.y
+      var clickX = clientLoc.x
+      var clickY = clientLoc.y
 
       // PAGE COORDINATES
       // Get centre of spot with current page scroll
@@ -157,23 +157,23 @@
 
       function dragDisc(event) {
         var snapIndex = -1
-        var pageLoc = getPageLoc(event)
+        var clientLoc = getClientLoc(event)
         if (!snapLocs.length) {
-          snapFirst(pageLoc)
+          snapFirst(clientLoc)
         } else {
-          snapToKnownPositions(pageLoc)
+          snapToKnownPositions(clientLoc)
         }
 
-        translateX = (pageLoc.x - clickX) * scale + startX
-        translateY = (pageLoc.y - clickY) * scale + startY
+        translateX = (clientLoc.x - clickX) * scale + startX
+        translateY = (clientLoc.y - clickY) * scale + startY
 
         transform = "translate("+ translateX + " " + translateY +")"
         disc.setAttribute("transform", transform)
       }
 
-      function snapFirst(pageLoc) {
-        var dX = ( pageLoc.x + offsetX - centreX )
-        var dY = ( pageLoc.y + offsetY - centreY )
+      function snapFirst(clientLoc) {
+        var dX = ( clientLoc.x + offsetX - centreX )
+        var dY = ( clientLoc.y + offsetY - centreY )
         var d2 = ( dX * dX + dY * dY )
 
         var SVGd = Math.sqrt(d2 * scale * scale)
@@ -194,8 +194,8 @@
           radius = Math.sqrt(radius2) / scale
           d = Math.sqrt(d2)
 
-          pageLoc.x += radius * dX / d - dX
-          pageLoc.y += radius * dY / d - dY
+          clientLoc.x += radius * dX / d - dX
+          clientLoc.y += radius * dY / d - dY
 
           snapIndex = 1
         } else {
@@ -203,7 +203,7 @@
         }
       }
 
-      function snapToKnownPositions(pageLoc) {
+      function snapToKnownPositions(clientLoc) {
         var total = snapLocs.length
         var dX
           , dY
@@ -213,14 +213,14 @@
         for (var ii = 0; ii < total; ii += 1) {
           snapLoc = snapLocs[ii]
           if (snapLoc) {
-            dX = snapLoc.x - (pageLoc.x + offsetX)
-            dY = snapLoc.y - (pageLoc.y + offsetY)
+            dX = snapLoc.x - (clientLoc.x + offsetX)
+            dY = snapLoc.y - (clientLoc.y + offsetY)
             d2 = (dX * dX + dY * dY)
 
             if (Math.abs(d2) < snapDelta) {
               // Snap to this location
-              pageLoc.x = snapLoc.x - offsetX
-              pageLoc.y = snapLoc.y - offsetY
+              clientLoc.x = snapLoc.x - offsetX
+              clientLoc.y = snapLoc.y - offsetY
               snapIndex = ii
               // Stop looking for a match
               return
