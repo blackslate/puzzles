@@ -152,7 +152,6 @@
 
     function showResult() {
       article.onmouseup = article.ontouchend = null
-      <!-- body.style.backgroundColor = "#fff" -->
 
       var svgNS = "http://www.w3.org/2000/svg"
       var svg = document.querySelector("svg")
@@ -162,6 +161,7 @@
       text.setAttributeNS(xlinkNS, "xlink:href", "#text")
       text.setAttribute("fill", "currentColor")
       svg.appendChild(text)
+      svg.classList.add("done")
 
       var doors = document.querySelectorAll("use[id]")
 

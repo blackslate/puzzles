@@ -1,10 +1,3 @@
-var resetPuzzle
-
-
-function puzzleLoaded(){
-};
-
-
 (function puzzleLoaded(puzzle){
   // puzzle = { map: { <hash>: <object>, ... }, hash: <string> }
   
@@ -401,7 +394,7 @@ function puzzleLoaded(){
       counter = 0
       setTextColor("#999", "")
 
-      svg.style.cursor = "pointer"
+      svg.classList.remove("fail")
       svg.onmousedown = svg.ontouchstart = moveMouse
     }
     
@@ -546,13 +539,14 @@ function puzzleLoaded(){
         document.querySelector("#walls").setAttribute("fill", color)
 
         svg.onmousedown = body.onmousemove = body.onmouseup = body.ontouchmove = body.ontouchend = null
+        svg.classList.add("done")
 
         puzzle.completed(puzzle.hash)
       }
 
       function lose() {
         svg.onmousedown = body.onmousemove = body.onmouseup = body.ontouchmove = body.ontouchend = null
-        svg.style.cursor = "not-allowed"
+        svg.classList.add("fail")
         setTextColor("#f00")
         setTimeout(restart, 1500)
       }

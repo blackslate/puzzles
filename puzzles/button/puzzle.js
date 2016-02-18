@@ -1,4 +1,3 @@
-
 ;(function puzzleLoaded(puzzle){
   // puzzle = { map: { <hash>: <object>, ... }, hash: <string> }
   
@@ -32,6 +31,7 @@
       }
 
       svg.onmouseup = svg.ontouchstart = null
+      svg.parentNode.removeChild(svg)
       panic.classList.add("panic")
       div.classList.add("show")
       div.classList.add("fade")

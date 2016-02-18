@@ -18,7 +18,7 @@
     // Expected to be 3x2 x the size of a keypad button for 2x1 reset
     var reset = new Image() // becomes src of image
     // <HARD-CODED>
-    var FRAMES = 8
+    var FRAMES = 9
     var SOURCE = "puzzles/safe/img/safe.jpg"
     var DELAY = 100
     // </HARD-CODED>
@@ -92,10 +92,10 @@
     function refreshSafe() {
       var rect = safe.getBoundingClientRect()
       var width = rect.width
-      var offsetX = (-width * frame) + "px"
+      var offset = (-width * frame) + "px 0px"
       safe.style.backgroundSize = (width * FRAMES) + "px "
                                 + (rect.height) + "px "
-      safe.style.backgroundPositionX = offsetX
+      safe.style.backgroundPosition = offset
     }
 
     function updateSafe () {
@@ -299,6 +299,7 @@
 
     function showSolution() {
       pad.onmousedown = pad.ontouchstart = null
+      pad.parentNode.removeChild(pad)
       canvas.parentNode.removeChild(canvas)
       setTimeout(startAnimation, 1000)
     }

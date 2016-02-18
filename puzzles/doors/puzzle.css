@@ -10,6 +10,12 @@ svg {
   width: 100%;
   height: 100%;
 }
+svg use {
+  cursor: pointer;
+}
+svg.done use {
+  cursor: default;
+}
 use#rrr {
   fill:#e88;
   color: #933;

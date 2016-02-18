@@ -14,6 +14,9 @@ h1 {
 svg.container {
   height: 100%;     
 }
+circle {
+  cursor: pointer;     
+}
 main img {
   position:absolute;
   top:0;

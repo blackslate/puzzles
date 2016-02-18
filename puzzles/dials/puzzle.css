@@ -3,5 +3,7 @@ svg {
   left: 0;
   top: 0;
   width: 100%;
+}
+svg:not(.done) {
   cursor: pointer;
 }

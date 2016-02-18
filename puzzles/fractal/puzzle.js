@@ -283,6 +283,7 @@
        
         // Reset the colour of the draggable pentagon
         parent.style.fill = "#222"
+        use.classList.add("done")
 
         // Put everything exactly in position
         do {

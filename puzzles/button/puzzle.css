@@ -49,6 +49,9 @@ svg.circle {
   left: 49.5%;
   top: 49%;
 }
+svg.circle:not(.done) {   
+  cursor:pointer;
+}
 #dont, #free {
   top:1.6%;
   left:1.6%;

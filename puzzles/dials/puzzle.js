@@ -1,5 +1,3 @@
-function puzzleLoaded(reloaded) {}
-
 ;(function puzzleLoaded(puzzle){
   // puzzle = { map: { <hash>: <object>, ... }, hash: <string> }
   
@@ -578,6 +576,7 @@ function puzzleLoaded(reloaded) {}
     function showDone() {
       var green = "#232"
       svg.onmousedown = svg.ontouchdown = null
+      svg.classList.add("done")
 
       dials.forEach(function(path) {
         if (path) {

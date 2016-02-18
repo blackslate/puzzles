@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 20160209-1154: v02
+# 20160215-1324
 
 CACHE:
 index.html
@@ -17,6 +17,15 @@ puzzles/button/img/dont.png
 puzzles/button/img/free.png
 puzzles/button/img/hole.jpg
 puzzles/button/img/panic.png
+
+puzzles/safe/icon.png
+puzzles/safe/puzzle.css
+puzzles/safe/puzzle.html
+puzzles/safe/puzzle.js
+puzzles/safe/img/safe.jpg
+puzzles/safe/img/dot.png
+puzzles/safe/img/glow.png
+puzzles/safe/img/reset.png
 
 puzzles/dials/icon.png
 puzzles/dials/puzzle.css
