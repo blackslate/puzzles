@@ -3,12 +3,16 @@
   var CLASSES = { started: "started", todo: "todo" }
 
   document.querySelector("nav").addEventListener(
-    "click"
+    "mouseup"
   , showGame
   , false)
   document.querySelector("nav").addEventListener(
+    "touchstart"
+  , prepareForDrag
+  , false)
+  document.querySelector("nav").addEventListener(
     "touchend"
-  , showGame
+  , checkForDrag
   , false)
 
   window.puzzle = {
@@ -23,7 +27,10 @@
   var puzzle_js = document.querySelector(".puzzle_js")
   var $main = $("body>main")
   var isIPhone =navigator.userAgent.toLowerCase().indexOf("iphone")>-1
+  var isIE = (navigator.userAgent.indexOf('MSIE') > -1
+           || navigator.appVersion.indexOf('Trident/') > -1)
   var links = [].slice.call(document.querySelectorAll("nav a"))
+  var dragStart
   var link
   var playedMap
 
@@ -42,13 +49,23 @@
       : (event.returnValue = false)
   })
 
-  // Disable puzzles which don't work on the current platform
-  if (isIPhone) {
-    var simpleLink = document.querySelector("li a[href='#simple']")
-    if (simpleLink) {
-      simpleLink.style.display = "none"
+  ;(function disableByPlatform(){
+    var disabled = []
+    var link
+
+    if (isIPhone) {
+      disabled.push("#simple")
+    } else if (isIE) {
+      disabled.push("#dot")
     }
-  }
+
+    for (var ii in disabled) {
+      link = document.querySelector("li a[href='"+ disabled[ii]+"']")
+      if (link) {
+        link.style.display = "none"
+      }
+    }
+  })()
 
   // Check which puzzles the user has already solved
   ;(function showPlayedGames(){
@@ -79,6 +96,21 @@
     }
   }
 
+  function prepareForDrag(event) {
+    dragStart = getClientLoc(event)  
+  }
+
+  function checkForDrag(event) {
+    var dragEnd = getClientLoc(event)
+    var dragX = dragEnd.x - dragStart.x
+    var dragY = dragEnd.y - dragStart.y
+    var drag2 = (dragX * dragX) + (dragY * dragY)
+
+    if (drag2 < 9) {
+      showGame(event)
+    }
+  }
+
   // Load the chosen game
   function showGame(event) {
     link = event.target // becomes <a> element or undefined
@@ -105,7 +137,7 @@
     $main.empty() // ensure no CSS conflict between puzzles
 
     // PREPARE PATHs FOR NEW PUZZLE
-    var path = "puzzles/" + hash + "/puzzle."
+    var path = "data/puzzles/" + hash + "/puzzle."
     
     // CHECK IF THIS PUZZLE HAS ALREADY BEEN LOADED
     puzzleObject = puzzle.map[hash]
@@ -145,7 +177,7 @@
           if (puzzleObject && puzzleObject.initialize) {
             puzzleObject.initialize()
           } else {
-            alert("Unable to initialize puzzle " + hash)
+            console.log("Unable to initialize puzzle " + hash)
           }
         }
       }
@@ -319,4 +351,3 @@ function getClientLoc(event) {
 
   return clientLoc
 }
-

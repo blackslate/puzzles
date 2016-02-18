@@ -19,7 +19,7 @@
     var reset = new Image() // becomes src of image
     // <HARD-CODED>
     var FRAMES = 9
-    var SOURCE = "puzzles/safe/img/safe.jpg"
+    var SOURCE = "data/puzzles/safe/img/safe.jpg"
     var DELAY = 100
     // </HARD-CODED>
     var frame = 0
@@ -315,9 +315,9 @@
 
     // Initialize when all images have been loaded
     dot.onload = glow.onload = reset.onload = checkIfAllAreLoaded
-    dot.src = "puzzles/safe/img/dot.png" // expected to be square
-    glow.src = "puzzles/safe/img/glow.png"
-    reset.src = "puzzles/safe/img/reset.png"
+    dot.src = "data/puzzles/safe/img/dot.png" // expected to be square
+    glow.src = "data/puzzles/safe/img/glow.png"
+    reset.src = "data/puzzles/safe/img/reset.png"
     
     // Allow user input
     document.body.addEventListener("keypress", typeInLED, false)

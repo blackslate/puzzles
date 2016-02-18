@@ -524,7 +524,7 @@
       source = canvas.toDataURL()
     }
 
-    img.src = "puzzles/spot/img/bandaid.jpg"
+    img.src = "data/puzzles/spot/img/bandaid.jpg"
   }
 
   Puzzle.prototype.kill = function kill() {

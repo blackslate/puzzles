@@ -1,59 +1,65 @@
 CACHE MANIFEST
-# 20160215-1324
+# 20160218-1427
 
 CACHE:
 index.html
-css/styles.css
-js/script.js
+data/css/styles.css
+data/js/script.js
 
 http://code.jquery.com/jquery-2.1.4.min.js
 
-puzzles/button/icon.png
-puzzles/button/puzzle.css
-puzzles/button/puzzle.html
-puzzles/button/puzzle.js
-puzzles/button/img/button.jpg
-puzzles/button/img/dont.png
-puzzles/button/img/free.png
-puzzles/button/img/hole.jpg
-puzzles/button/img/panic.png
+data/puzzles/button/icon.png
+data/puzzles/button/puzzle.css
+data/puzzles/button/puzzle.html
+data/puzzles/button/puzzle.js
+data/puzzles/button/img/button.jpg
+data/puzzles/button/img/dont.png
+data/puzzles/button/img/free.png
+data/puzzles/button/img/hole.jpg
+data/puzzles/button/img/panic.png
 
-puzzles/safe/icon.png
-puzzles/safe/puzzle.css
-puzzles/safe/puzzle.html
-puzzles/safe/puzzle.js
-puzzles/safe/img/safe.jpg
-puzzles/safe/img/dot.png
-puzzles/safe/img/glow.png
-puzzles/safe/img/reset.png
+data/puzzles/safe/icon.png
+data/puzzles/safe/puzzle.css
+data/puzzles/safe/puzzle.html
+data/puzzles/safe/puzzle.js
+data/puzzles/safe/img/safe.jpg
+data/puzzles/safe/img/dot.png
+data/puzzles/safe/img/glow.png
+data/puzzles/safe/img/reset.png
 
-puzzles/dials/icon.png
-puzzles/dials/puzzle.css
-puzzles/dials/puzzle.html
-puzzles/dials/puzzle.js
+data/puzzles/dials/icon.png
+data/puzzles/dials/puzzle.css
+data/puzzles/dials/puzzle.html
+data/puzzles/dials/puzzle.js
 
-puzzles/doors/icon.png
-puzzles/doors/puzzle.css
-puzzles/doors/puzzle.html
-puzzles/doors/puzzle.js
+data/puzzles/doors/icon.png
+data/puzzles/doors/puzzle.css
+data/puzzles/doors/puzzle.html
+data/puzzles/doors/puzzle.js
 
-puzzles/fractal/icon.png
-puzzles/fractal/puzzle.css
-puzzles/fractal/puzzle.html
-puzzles/fractal/puzzle.js
+data/puzzles/fractal/icon.png
+data/puzzles/fractal/puzzle.css
+data/puzzles/fractal/puzzle.html
+data/puzzles/fractal/puzzle.js
 
-puzzles/maze/icon.png
-puzzles/maze/puzzle.css
-puzzles/maze/puzzle.html
-puzzles/maze/puzzle.js
-puzzles/maze/img/cheese.png
-puzzles/maze/img/mouse.png
+data/puzzles/maze/icon.png
+data/puzzles/maze/puzzle.css
+data/puzzles/maze/puzzle.html
+data/puzzles/maze/puzzle.js
+data/puzzles/maze/img/cheese.png
+data/puzzles/maze/img/mouse.png
 
-puzzles/spot/icon.png
-puzzles/spot/puzzle.css
-puzzles/spot/puzzle.html
-puzzles/spot/puzzle.js
-puzzles/spot/img/bandaid.jpg
+data/puzzles/spot/icon.png
+data/puzzles/spot/puzzle.css
+data/puzzles/spot/puzzle.html
+data/puzzles/spot/puzzle.js
+data/puzzles/spot/img/bandaid.jpg
+
+data/puzzles/dot/icon.png
+data/puzzles/dot/puzzle.css
+data/puzzles/dot/puzzle.html
+data/puzzles/dot/puzzle.js
+data/puzzles/dot/img/keypad.jpg
 
 NETWORK:
 *

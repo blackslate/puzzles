@@ -1,0 +1,33 @@
+article.fade {    
+  background: #009;
+  -moz-transition: all 5s linear;
+  -webkit-transition: all 5s linear;
+  -o-transition: all 5s linear;
+  transition: all 5s linear;
+}
+svg {
+  width: 100%;
+  height: 100%;
+}
+article img,
+svg.keypad {
+  position: absolute;
+  left:44%;
+  top:2%;
+  width: 54%;
+  opacity:1;
+}
+article img {
+  position: absolute;
+  left:44%;
+  top:2%;
+  width: 54%;
+}
+article img.fade,
+svg.keypad.fade {
+  opacity: 0;
+  -moz-transition: all 5s ease-in;
+  -webkit-transition: all 5s ease-in;
+  -o-transition: all 5s ease-in;
+  transition: all 5s ease-in;
+}
