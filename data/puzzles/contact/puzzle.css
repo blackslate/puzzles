@@ -1,0 +1,57 @@
+article img {
+width: 100%;
+opacity: 0.15;
+}
+
+article div {
+position: absolute;
+color: #fff;
+opacity: 0.15;
+top: 63%;
+left: 28%;
+font-size:0;
+}
+
+article div:hover,
+article div:active {
+opacity: 1;
+}
+
+article a {
+color: #fff;
+text-decoration: none;
+}
+
+article a:hover,
+article a:active {
+text-decoration: underline;
+}
+
+.can-select {
+-webkit-touch-callout: all;
+-webkit-user-select: all;
+-khtml-user-select: all;
+-moz-user-select: all;
+-ms-user-select: all;
+user-select: all;
+}
+
+span::selection { /* WebKit/Blink Browsers */
+background: #fff;
+color: #000;
+opacity:1;
+}
+span::-moz-selection { /* Gecko Browsers */
+background: #fff;
+color: #000;
+opacity:1; 
+}
+
+.copy {
+position:absolute;
+left:-99999px
+color: #000;
+background: #FFF;
+font-size: 1em;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
