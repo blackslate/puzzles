@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 20160218-1427
+# 20160218-2000
 
 CACHE:
 index.html
@@ -60,6 +60,12 @@ data/puzzles/dot/puzzle.css
 data/puzzles/dot/puzzle.html
 data/puzzles/dot/puzzle.js
 data/puzzles/dot/img/keypad.jpg
+
+data/puzzles/contact/icon.png
+data/puzzles/contact/puzzle.css
+data/puzzles/contact/puzzle.html
+data/puzzles/contact/puzzle.js
+data/puzzles/contact/img/chameleon.svg
 
 NETWORK:
 *
