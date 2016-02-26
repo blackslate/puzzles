@@ -18,6 +18,8 @@ TO DO
 * 29 = February = phoenix
 *
 * Why these connections?
+* Add more images so that it is different each time after the first
+* play.
 */
 
 window.puzzle = {
@@ -131,18 +133,24 @@ function getClientLoc(event) {
       var data
       elements.every(function (element, index) {
         if (element === card) {
-          turnCard(element, index)
+          prepareToTurnCard(element, index)
           return false
         }
 
         return true
       })
 
+      if (!data) {
+        console.log("Click on face up card: " + (card.src || card.innerHTML).split("/").pop())
+        return
+      }
+
       switch (turned.length) {
         case 1:
-          // do nothing
+          turnCard()
         break
         case 2:
+          turnCard()
           if (data.value === turned[0].value) {
             turned.length = 0
           } else {
@@ -153,14 +161,18 @@ function getClientLoc(event) {
           turnFaceDown()
       }
 
-      function turnCard(element, index) {
-        elements[index] = element
+      function prepareToTurnCard(element, index) {
         data = cards[index]
         data.index = index
         data.back = element
+        elements[index] = data.content
         turned.push(data)
 
-        game.replaceChild(data.content, element)
+        // game.replaceChild(data.content, element)
+      }
+
+      function turnCard() {
+        game.replaceChild(data.content, data.back)
       }
 
       function turnFaceDown() {
@@ -170,6 +182,8 @@ function getClientLoc(event) {
         var data = turned.shift()
         game.replaceChild(data.back, data.content)
         elements[data.index] = data.back
+
+        turnCard()
       }
     }
 
