@@ -29,6 +29,7 @@
   var isIPhone =navigator.userAgent.toLowerCase().indexOf("iphone")>-1
   var isIE = (navigator.userAgent.indexOf('MSIE') > -1
            || navigator.appVersion.indexOf('Trident/') > -1)
+  // Does this also also detect Android?
   var links = [].slice.call(document.querySelectorAll("nav a"))
   var dragStart
   var link
