@@ -82,6 +82,7 @@ function getClientLoc(event) {
     var game   = document.querySelector("article div")
     var selector = "article div img, article div span"
     var elements = [].slice.call(document.querySelectorAll(selector))
+    var swapTime = 1000 // <HARD-CODED>
     var turned = []
     var path = "img/"
     var back = "bk.jpg"
@@ -139,9 +140,6 @@ function getClientLoc(event) {
 
     function startGame() {
       shuffle(cards)
-      // cards.forEach(function (card) {
-      //   game.appendChild(card.content)
-      // })
       game.onmousedown = game.ontouchstart = checkCard
     }
 
@@ -156,7 +154,7 @@ function getClientLoc(event) {
       }
 
       var data
-      elements.every(function (element, index) {
+      elements.every(function findCard(element, index) {
         if (element === card) {
           prepareToTurnCard(element, index)
           return false
@@ -177,6 +175,7 @@ function getClientLoc(event) {
         case 2:
           turnCard()
           if (data.value === turned[0].value) {
+            // Fade the matching cards
             setTimeout(function () {
               data.content.classList.add("found")
               turned[0].content.classList.add("found")
@@ -187,7 +186,8 @@ function getClientLoc(event) {
           }
         break
         default:
-          turnFaceDown()
+          // The last two cards didn't match
+          swapCards()
       }
 
       function prepareToTurnCard(element, index) {
@@ -196,23 +196,67 @@ function getClientLoc(event) {
         data.back = element
         elements[index] = data.content
         turned.push(data)
-
-        // game.replaceChild(data.content, element)
       }
 
       function turnCard() {
         game.replaceChild(data.content, data.back)
       }
 
-      function turnFaceDown() {
-        var data = turned.shift()
-        game.replaceChild(data.back, data.content)
-        elements[data.index] = data.back
-        var data = turned.shift()
-        game.replaceChild(data.back, data.content)
-        elements[data.index] = data.back
+      function swapCards() {
+        var source = turned.shift()
+        var target = turned.shift()
+        var sourceRect = source.content.getBoundingClientRect()
+        var targetRect = target.content.getBoundingClientRect()
+        var deltaX = targetRect.left - sourceRect.left
+        var deltaY = targetRect.top - sourceRect.top
+        var startTime = + new Date()
+        var done = false
 
-        turnCard()
+        source.content.classList.add("swap")
+        target.content.classList.add("swap")
+
+        game.onmousedown = game.ontouchstart = null
+
+        ;(function exchangePlaces(){
+          var elapsed = (+ new Date() - startTime) / swapTime
+          if (elapsed > 1) {
+            elapsed = 1
+            done = true
+          }
+
+          var moveX = deltaX * elapsed
+          var moveY = deltaY * elapsed
+          source.content.style.left = moveX + "px"
+          source.content.style.top = moveY + "px"
+          target.content.style.left = -moveX + "px"
+          target.content.style.top = -moveY + "px"
+
+          if (done) {
+            setTimeout(completeSwap, swapTime)
+          } else {
+            setTimeout(exchangePlaces, 20)
+          }
+        })()
+
+        function completeSwap() {
+          var index = target.index
+          cards[index] = source
+          game.replaceChild(target.back, target.content)
+          elements[index] = target.back
+
+          index = source.index
+          cards[index] = target
+          game.replaceChild(source.back, source.content)
+          elements[index] = source.back
+
+          source.content.classList.remove("swap")
+          source.content.style.cssText = ""
+          target.content.classList.remove("swap")
+          target.content.style.cssText = ""
+          turnCard()
+
+          game.onmousedown = game.ontouchstart = checkCard
+        }
       }
     }
 

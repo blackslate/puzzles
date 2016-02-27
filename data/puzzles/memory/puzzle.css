@@ -60,8 +60,7 @@ z-index:1;
 -ms-filter: drop-shadow(4px 4px 8px #ffc);
 -o-filter: drop-shadow(4px 4px 8px #ffc);
 filter: drop-shadow(4px 4px 8px #ffc);
-top: 5vmin;
-right:5vmin;
+/*position:absolute;*/
 }
 article img,
 article span{

@@ -1,0 +1,24 @@
+We have an array of elements in the order that they are on display in the game div. Their position is determined by their order of appearance. On checkCard, we iterate through the array to determine the index of the card that is clicked. We get the object from the cards array that is at that index, and update it:
+
+  data = cards[index]
+  data.index = index
+  data.back = element
+  elements[index] = data.content
+  turned.push(data)
+
+  turned = [{
+    content: <img or span element>
+  , value: <prime number 2-29>
+  , index: <position in array: used in turnFaceDown to restore back>
+  , back: <img src="bk.jpg" that the content will replace>
+  }]
+
+  elements gets the appropriate `content` placed at the appropriate index.
+
+  turnFaceDown() {
+    var data = turned.shift()
+    game.replaceChild(data.back, data.content)
+    elements[data.index] = data.back
+  }
+
+If the two turned cards do not match, then we need to swap their places in the cards array
