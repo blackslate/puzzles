@@ -2,7 +2,24 @@
 TO DO
 * Swap cards if they don't match before turning the next one
 * - Show them for a moment in the new position
+    get current element in nth place
+    get its x,y coordinates
+    get element in pth place
+    get its x,y coordinates
+
+    calculate delta x,y
+    start a timeout
+    calculate elapsed time
+    calculate distance travelled: nth.x + elapsed.x : nth.x + delta.x - elapsed.x
+    Apply this to each element
+
+    Prevent mouse events during this time
+    When movement is complete:
+    - Show back in new position
+    - Swap backs so that they are back in their elements order
+*
 * Decide on final image when puzzle is complete
+* - All fades to black and then...?
 * Decide what to do when two images match
 * - Fade out instead of swapping places?
 * 
@@ -20,6 +37,14 @@ TO DO
 * Why these connections?
 * Add more images so that it is different each time after the first
 * play.
+*
+* Second version where you must make pairs of socks, but if you make
+* too many errors or are too slow, one (or two) sock(s from a
+* different pair) will fade out while face down.
+*
+* Limit the number of turns to 20: 10 errors and 10 right answers,
+* then turn the cards face-down and reshuffle them. 15-16 seem to be 
+* best chance results. 
 */
 
 window.puzzle = {
@@ -152,7 +177,11 @@ function getClientLoc(event) {
         case 2:
           turnCard()
           if (data.value === turned[0].value) {
-            turned.length = 0
+            setTimeout(function () {
+              data.content.classList.add("found")
+              turned[0].content.classList.add("found")
+              turned.length = 0
+            }, 0)
           } else {
             console.log("No match")
           }
