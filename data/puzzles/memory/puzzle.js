@@ -1,23 +1,6 @@
+"use strict"
+
 /*
-TO DO
-* Swap cards if they don't match before turning the next one
-* - Show them for a moment in the new position
-    get current element in nth place
-    get its x,y coordinates
-    get element in pth place
-    get its x,y coordinates
-
-    calculate delta x,y
-    start a timeout
-    calculate elapsed time
-    calculate distance travelled: nth.x + elapsed.x : nth.x + delta.x - elapsed.x
-    Apply this to each element
-
-    Prevent mouse events during this time
-    When movement is complete:
-    - Show back in new position
-    - Swap backs so that they are back in their elements order
-*
 * Decide on final image when puzzle is complete
 * - All fades to black and then...?
 * Decide what to do when two images match
@@ -42,10 +25,45 @@ TO DO
 * too many errors or are too slow, one (or two) sock(s from a
 * different pair) will fade out while face down.
 *
-* Limit the number of turns to 20: 10 errors and 10 right answers,
-* then turn the cards face-down and reshuffle them. 15-16 seem to be 
-* best chance results. 
+* Limit the number of turns to 19: 9 errors and 10 right answers.
+* This is the maximum number of errors consistent with a methodic
+* approach.
+* 
+* If the user turns a card that has already been turned without making
+* a pair then
+* - turn the cards face-up, dimmed
+* - highlight one pair that the user has not yet matched
+* - wait for a click
+* - turn the cards face dow
+* - reshuffle them. 
+*
+* => remember which pairs have been matched in local storage
+* => remember which cards have been turned in this game
+* => when a matched pair is not found, check if either card has
+*    already been turned. If so:
+*    - count one error
+* => If the match for the first card has already been seen:
+*    - flash
+*    - show all cards, dimmed
+*    - show the correct position of the match for the first card
+*    - if the match for the second card has already been seen
+*      - wait for click; show the second match
+*    - wait for a click
+*    - reshuffle
+*
+* The user may not be aware of which cards form a pair. Showing the pair and then restarting the game means that the player could take a maximum of 10 turns to discover all the pairs.
+*
+* Interrupt the game if:
+* - You have already seen a match for the first card but you
+*   click on a different card.
+*
+* => Detect which cards have been seen in this game
+* => Create pairs
+* => Check if first card turned has a match
+* => Interrupt game if second card is not that match
 */
+
+var showGameComplete
 
 window.puzzle = {
   map: {}
@@ -80,14 +98,17 @@ function getClientLoc(event) {
 
   Puzzle.prototype.initialize = function initialize() {
     var game   = document.querySelector("article div")
+    var flash  = document.querySelector("div.flash")
+    var shadow = document.createElement("div")
     var selector = "article div img, article div span"
-    var elements = [].slice.call(document.querySelectorAll(selector))
+    var backs = [].slice.call(document.querySelectorAll(selector))
     var swapTime = 1000 // <HARD-CODED>
     var turned = []
     var path = "img/"
     var back = "bk.jpg"
-    var cards = [
-      "2.jpg"
+    var door = "door.jpg"
+    var cards = [ // becomes array of images and spans
+       "2.jpg"
     ,  "3.jpg"
     ,  "5.png"
     ,  "7.jpg"
@@ -98,7 +119,9 @@ function getClientLoc(event) {
     , "23.jpg"
     , "29.jpg"
     , back
+    , door
     ]
+    var pairs = {} // x.ext: 0, y: 0, z.ext: z
 
     ;(function loadImages(){
       var remaining = cards.length
@@ -114,11 +137,15 @@ function getClientLoc(event) {
 
         function checkForCompletion(event) {
           var image = event.target
+          var fileName = image.src.split("/").pop()
           remaining -= 1
 
-          if (image.src.split("/").pop() === back) {
+          if (fileName === back) {
+            cards.splice(cards.indexOf(back), 1)
             back = image
-            cards.pop()
+          } else if (fileName === door) {
+            cards.splice(cards.indexOf(door), 1)
+            door = image
           } else {            
             cards[index] = { content: image, value: name }
             span = document.createElement("span")
@@ -134,39 +161,35 @@ function getClientLoc(event) {
         function cancelPuzzle() {
           alert("Images haven't loaded. Try again.")
         }
-
       })
     })()
 
     function startGame() {
+      var ii
+        , element
+
       shuffle(cards)
+      pairs = {}
+      turned.length = 0
+
+      for (var ii in cards) {
+        element = cards[ii].content
+        element.classList.remove("dimmed")
+        element.classList.remove("found")
+      }
+
       game.onmousedown = game.ontouchstart = checkCard
     }
 
     function checkCard(event) {
-      var card = event.target
-      switch (card.tagName) {
-        default: 
-          return
-        case "IMG":
-        case "SPAN":
-          // continue
-      }
-
-      var data
-      elements.every(function findCard(element, index) {
-        if (element === card) {
-          prepareToTurnCard(element, index)
-          return false
-        }
-
-        return true
-      })
-
-      if (!data) {
-        console.log("Click on face up card: " + (card.src || card.innerHTML).split("/").pop())
+      var back = event.target
+      if (!back.src || back.src.split("/").pop() !== "bk.jpg") {
+        // Click was not on a card with its back showing
         return
       }
+
+      var data // set in the next line
+      prepareToTurnCard(back, backs.indexOf(back))
 
       switch (turned.length) {
         case 1:
@@ -176,11 +199,7 @@ function getClientLoc(event) {
           turnCard()
           if (data.value === turned[0].value) {
             // Fade the matching cards
-            setTimeout(function () {
-              data.content.classList.add("found")
-              turned[0].content.classList.add("found")
-              turned.length = 0
-            }, 0)
+            setTimeout(cardsMatch, 0)
           } else {
             console.log("No match")
           }
@@ -190,16 +209,71 @@ function getClientLoc(event) {
           swapCards()
       }
 
-      function prepareToTurnCard(element, index) {
+      function cardsMatch() {
+        var keys = Object.keys(pairs)
+        var complete = keys.length === 10
+        var info = getCardInfo(data)
+        var match = pairs[info.value]
+        var key
+
+        match.found = true
+        data.content.classList.add("found")
+        turned[0].content.classList.add("found")
+        turned.length = 0
+ 
+        if (complete) {
+          for(key in pairs) {
+            if (!pairs[key].found) {
+              complete = false
+            }
+          }
+        }
+
+        if (complete) {
+          game.onmousedown = game.ontouchstart = null
+          setTimeout(showGameComplete, 1000)
+        }
+      }
+
+      function prepareToTurnCard(back, index) {
         data = cards[index]
         data.index = index
-        data.back = element
-        elements[index] = data.content
+        data.back = back
+        //backs[index] = data.content
         turned.push(data)
       }
 
       function turnCard() {
+        logCard(data)
         game.replaceChild(data.content, data.back)
+      }
+
+      function logCard(data) {
+        var info = getCardInfo(data)
+        // { type:  <"7" | "7.xxg"
+        // , value: 7 }
+        var match = pairs[info.value]
+        if (!match) {
+          match = []
+          pairs[info.value] = match
+        }
+        if (match.indexOf(info.type) < 0) {
+          match.push(info.type) // ["7"] | ["xxg"] | ["7", "xxg"]
+        }
+      }
+
+      /**
+       * getCardInfo called by logCard() and swapCards()
+       * @param  {[type]} data [description]
+       * @return {[type]}      [description]
+       */
+      function getCardInfo(data) {
+        var content = data.content
+        var type = (content.src || content.innerHTML).split("/").pop()
+        // "7" | "7.jpg" | "7.png" || "17" | "17.jpg" | "17.png"
+        var value = parseInt(type, 10)
+        // 7
+        return { type: type, value: value }
       }
 
       function swapCards() {
@@ -211,6 +285,12 @@ function getClientLoc(event) {
         var deltaY = targetRect.top - sourceRect.top
         var startTime = + new Date()
         var done = false
+        var value = getCardInfo(source).value
+
+        if (pairs[value].length === 2) {
+          // The matching card has already been seen
+          return showError()
+        }
 
         source.content.classList.add("swap")
         target.content.classList.add("swap")
@@ -242,12 +322,12 @@ function getClientLoc(event) {
           var index = target.index
           cards[index] = source
           game.replaceChild(target.back, target.content)
-          elements[index] = target.back
+          //backs[index] = target.back
 
           index = source.index
           cards[index] = target
           game.replaceChild(source.back, source.content)
-          elements[index] = source.back
+          //backs[index] = source.back
 
           source.content.classList.remove("swap")
           source.content.style.cssText = ""
@@ -256,6 +336,135 @@ function getClientLoc(event) {
           turnCard()
 
           game.onmousedown = game.ontouchstart = checkCard
+        }
+
+        function showError() {
+          var match = getMatch()
+          var cardElement
+            , offsets
+
+          // Flash
+          flash.classList.remove("hidden")
+          turnAllCards(cards)
+
+          source.content.classList.remove("dimmed")
+          match.content.classList.remove("dimmed")
+
+          setTimeout(hideFlash, 20)
+
+          function hideFlash() {
+            var elements = document.querySelectorAll(selector)
+            var index
+            elements = [].slice.call(elements)
+
+            flash.classList.add("hidden")
+            // Wait for click
+            game.onmousedown = game.ontouchstart = reshuffle
+          }
+          
+          function getMatch() {
+            var value = source.value
+            var match = cards.reduce(function(previous, current) {
+              if (current.value === value && current !== source) {
+                return current
+              } else {
+                return previous
+              }
+            })
+
+            return match
+          }
+
+          function turnAllCards(elements) {
+            var element
+
+            while (game.firstChild) {
+              game.removeChild(game.firstChild);
+            }
+            for(var ii in elements) {
+              element = elements[ii]
+
+              if (element.content) {
+                // Cards will be face-up
+                element = element.content
+                element.classList.add("dimmed")
+              }
+
+              game.appendChild(element)
+            }
+            game.appendChild(flash)
+          }
+
+          function reshuffle () {
+            var startTime = + new Date()
+            var offsets
+            var elapsed
+              , done
+              , back
+              , ii
+              , style
+
+            game.onmousedown = game.ontouchstart = null
+            // Turn all cards back over
+            turnAllCards(backs)
+            // Move all cards to a new position
+            offsets = getShuffleOffsets()
+            
+            ;(function shuffleCards(){
+              elapsed = (+ new Date() - startTime) / swapTime
+              if (elapsed > 1) {
+                elapsed = 1
+                done = true
+              }
+
+              if (!done) {
+                for (var ii in backs) {
+                  back = backs[ii]
+                  style = "left:" + offsets[ii].x * elapsed + "px;"
+                  style += "top:" + offsets[ii].y * elapsed + "px"
+                  back.style.cssText = style
+                }
+
+                setTimeout(shuffleCards, 20)
+              } else {
+                // Return cards to their original places (but they'll
+                // look as if they are dropping into their target
+                // position)       
+                for (var ii in backs) {
+                  backs[ii].style.cssText = ""
+                }
+
+                startGame()
+              }
+            })()        
+          }
+
+          function getShuffleOffsets() {
+            var shuffled = []
+            var rect
+              , position
+              , offsets
+
+            var positions = backs.map(function(back) {
+              rect = back.getBoundingClientRect()
+              position = { x: rect.left, y: rect.top }
+              shuffled.push(position)
+              return position
+            })
+
+            shuffle(shuffled)
+
+            offsets = positions.map(function(startPosition, index) {
+              position = { 
+                x: shuffled[index].x - startPosition.x 
+              , y: shuffled[index].y - startPosition.y
+              }
+              
+              return position
+            })
+
+            return offsets
+          }
         }
       }
     }
@@ -272,8 +481,16 @@ function getClientLoc(event) {
         array[random] = swap;
       }
     }
-    
-    puzzle.completed(puzzle.hash)
+
+    function showGameComplete() {
+      door.classList.add("hidden")
+      game.appendChild(door)
+
+      setTimeout(function () {
+        door.classList.remove("hidden")
+      }, 100)
+      puzzle.completed(puzzle.hash)
+    }
   }
 
   Puzzle.prototype.kill = function kill() {

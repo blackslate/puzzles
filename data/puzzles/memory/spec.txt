@@ -21,4 +21,6 @@ We have an array of elements in the order that they are on display in the game d
     elements[data.index] = data.back
   }
 
-If the two turned cards do not match, then we need to swap their places in the cards array
+If the two turned cards do not match, then we need to swap their places in the cards array. The `back` elements need to be returned to their initial place in the `elements` array, but their index will now refer to the other card.
+
+The element are initially set to relative positions, determined by position. They will have a precise ClientBoundingRect, which can be compared to the clientLeft and clientTop of the parent div.
