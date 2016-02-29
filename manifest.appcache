@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 20160218-2000
+# 20160229-1325
 
 CACHE:
 index.html
@@ -27,21 +27,6 @@ data/puzzles/safe/img/dot.png
 data/puzzles/safe/img/glow.png
 data/puzzles/safe/img/reset.png
 
-data/puzzles/dials/icon.png
-data/puzzles/dials/puzzle.css
-data/puzzles/dials/puzzle.html
-data/puzzles/dials/puzzle.js
-
-data/puzzles/doors/icon.png
-data/puzzles/doors/puzzle.css
-data/puzzles/doors/puzzle.html
-data/puzzles/doors/puzzle.js
-
-data/puzzles/fractal/icon.png
-data/puzzles/fractal/puzzle.css
-data/puzzles/fractal/puzzle.html
-data/puzzles/fractal/puzzle.js
-
 data/puzzles/maze/icon.png
 data/puzzles/maze/puzzle.css
 data/puzzles/maze/puzzle.html
@@ -49,11 +34,43 @@ data/puzzles/maze/puzzle.js
 data/puzzles/maze/img/cheese.png
 data/puzzles/maze/img/mouse.png
 
+data/puzzles/fractal/icon.png
+data/puzzles/fractal/puzzle.css
+data/puzzles/fractal/puzzle.html
+data/puzzles/fractal/puzzle.js
+
+data/puzzles/dials/icon.png
+data/puzzles/dials/puzzle.css
+data/puzzles/dials/puzzle.html
+data/puzzles/dials/puzzle.js
+
 data/puzzles/spot/icon.png
 data/puzzles/spot/puzzle.css
 data/puzzles/spot/puzzle.html
 data/puzzles/spot/puzzle.js
 data/puzzles/spot/img/bandaid.jpg
+
+data/puzzles/doors/icon.png
+data/puzzles/doors/puzzle.css
+data/puzzles/doors/puzzle.html
+data/puzzles/doors/puzzle.js
+
+data/puzzles/memory/icon.png
+data/puzzles/memory/puzzle.css
+data/puzzles/memory/puzzle.html
+data/puzzles/memory/puzzle.js
+data/puzzles/memory/img/2.jpg
+data/puzzles/memory/img/3.jpg
+data/puzzles/memory/img/5.png
+data/puzzles/memory/img/7.jpg
+data/puzzles/memory/img/1.jpg
+data/puzzles/memory/img/13.png
+data/puzzles/memory/img/17.jpg
+data/puzzles/memory/img/19.jpg
+data/puzzles/memory/img/23.jpg
+data/puzzles/memory/img/29.jpg
+data/puzzles/memory/img/bk.jpg
+data/puzzles/memory/img/door.jpg
 
 data/puzzles/dot/icon.png
 data/puzzles/dot/puzzle.css

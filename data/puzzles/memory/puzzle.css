@@ -1,27 +1,3 @@
-body {
-  margin: 0;
-  background-color: #000;
-}
-article {
-  position: absolute;
-  box-sizing: border-box;
-  top: calc(50vh - 50vmin);
-  left: calc(50vw - 50vmin);
-  width: 100vmin;
-  height: 100vmin;
-  /*background-color: #200;
-  border: 1px solid #600;*/
-}
-h1 {
-  margin: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 30vmin;
-  color: #300;
-}
-
-/*********** REMOVE ALL CODE ABOVE THIS LINE IN PRODUCTION **********/
-
 div.game {
 position: absolute;
 top: 10%;
@@ -41,7 +17,7 @@ box-sizing: border-box;
 border: 1px solid #886;
 vertical-align: top;
 }
-article img[src*='bk'] {
+article img.back {
 border:none;
 }
 span {
@@ -53,17 +29,18 @@ box-sizing: border-box;
 border: 1px solid #886;
 border-radius: 4%;
 background-color: #ffe;
-font-size: 18vmin;
+color:#000;
+font-size: 0;
 text-align: center;
 }
 article img.swap,
 span.swap {
 z-index:1;
--webkit-filter: drop-shadow(1vmin 1vmin 1.5vmin #ffc);
--moz-filter: drop-shadow(4px 4px 8px #ffc);
--ms-filter: drop-shadow(4px 4px 8px #ffc);
--o-filter: drop-shadow(4px 4px 8px #ffc);
-filter: drop-shadow(4px 4px 8px #ffc);
+-webkit-filter: drop-shadow(4px 4px 6px #ffc);
+-moz-filter: drop-shadow(4px 4px 6px #ffc);
+-ms-filter: drop-shadow(4px 4px 6px #ffc);
+-o-filter: drop-shadow(4px 4px 6px #ffc);
+filter: drop-shadow(4px 4px 6px #ffc);
 /*position:absolute;*/
 }
 article img,
@@ -94,6 +71,7 @@ height: 100%;
 div.flash + img {
 position: absolute;
 top: 0;
+left: 0;
 width: 100%;
 height: 100%;
 border-radius: 0;
@@ -106,4 +84,12 @@ opacity: 1;
 div.flash + img.hidden {
 display: block;
 opacity: 0;
+}
+
+/* HACK TO MAKE FIREFOX SHOW SPAN TEXT AT THE RIGHT HEIGHT */
+@-moz-document url-prefix() {
+
+  span {
+    padding-top: 0.125em;
+  }
 }
