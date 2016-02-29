@@ -122,6 +122,7 @@ function getClientLoc(event) {
     , door
     ]
     var pairs = {} // x.ext: 0, y: 0, z.ext: z
+    var reshuffle
 
     ;(function loadImages(){
       var remaining = cards.length
@@ -178,7 +179,7 @@ function getClientLoc(event) {
         element.classList.remove("found")
       }
 
-      game.onmousedown = game.ontouchstart = checkCard
+      enableAction(checkCard)
     }
 
     function checkCard(event) {
@@ -230,7 +231,7 @@ function getClientLoc(event) {
         }
 
         if (complete) {
-          game.onmousedown = game.ontouchstart = null
+          disableActions()
           setTimeout(showGameComplete, 1000)
         }
       }
@@ -295,7 +296,7 @@ function getClientLoc(event) {
         source.content.classList.add("swap")
         target.content.classList.add("swap")
 
-        game.onmousedown = game.ontouchstart = null
+        disableActions()
 
         ;(function exchangePlaces(){
           var elapsed = (+ new Date() - startTime) / swapTime
@@ -335,7 +336,7 @@ function getClientLoc(event) {
           target.content.style.cssText = ""
           turnCard()
 
-          game.onmousedown = game.ontouchstart = checkCard
+          enableAction(checkCard)
         }
 
         function showError() {
@@ -359,7 +360,7 @@ function getClientLoc(event) {
 
             flash.classList.add("hidden")
             // Wait for click
-            game.onmousedown = game.ontouchstart = reshuffle
+            enableAction(reshuffle)
           }
           
           function getMatch() {
@@ -395,7 +396,7 @@ function getClientLoc(event) {
             game.appendChild(flash)
           }
 
-          function reshuffle () {
+          reshuffle = function reshuffle() {
             var startTime = + new Date()
             var offsets
             var elapsed
@@ -404,7 +405,7 @@ function getClientLoc(event) {
               , ii
               , style
 
-            game.onmousedown = game.ontouchstart = null
+            disableActions()
             // Turn all cards back over
             turnAllCards(backs)
             // Move all cards to a new position
@@ -490,6 +491,16 @@ function getClientLoc(event) {
         door.classList.remove("hidden")
       }, 100)
       puzzle.completed(puzzle.hash)
+    }
+
+    function disableActions() {
+      game.onmousedown = game.ontouchstart = null
+      game.classList.add("disabled")
+    }
+
+    function enableAction(action) {
+      game.onmousedown = game.ontouchstart = action
+      game.classList.remove("disabled")
     }
   }
 
