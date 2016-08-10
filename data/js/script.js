@@ -340,15 +340,28 @@
  * @param  {mouse event|touch event} event [description]
  * @return {object}       { x: <...pageX>, y: <...pageY> }
  */
+var clientLoc
 function getClientLoc(event) {
-  var clientLoc = {}
-  if (isNaN(event.clientX)) {          
-    clientLoc.x = event.targetTouches[0].clientX
-    clientLoc.y = event.targetTouches[0].clientY
+  // var clientLoc should be declared at the lowest common level
+  // where it is used. If event is a touchend event, the the last
+  // known value of clientLoc will still be in memory.
+  
+  if (!clientLoc) {
+    clientLoc = { x: 0, y: 0 }
+  }
+
+  if (isNaN(event.clientX)) {
+    if (event.targetTouches) {
+      touch = event.targetTouches[0]
+      if (touch) {   
+        clientLoc.x = touch.clientX
+        clientLoc.y = touch.clientY
+      }
+    }
   } else {          
     clientLoc.x = event.clientX
     clientLoc.y = event.clientY
   }
 
   return clientLoc
-}
+} 
