@@ -182,13 +182,75 @@ function getClientLoc(event) {
       })()
     })()
 
-    function displayWord(word) {
+    ;(function activateButtons(){
+      var arrows = document.querySelector(".arrows")
+      arrows.onmouseover = hiliteButton
+      arrows.onmouseout = loliteButton
+      arrows.onmousedown = activateButton
 
+      function hiliteButton(event) {
+        var action = getAction(event)
+        if (!action) {
+          return
+        }
+        
+        action.target.classList.add("hilite")
+      }
+
+      function loliteButton(event) {
+        var action = getAction(event)
+        if (!action) {
+          return
+        }
+        
+        action.target.classList.remove("hilite")
+      }
+
+      function activateButton(event) {
+        var action = getAction(event)
+        if (!action) {
+          return
+        }
+        
+        action.target.classList.add("pressed")
+        document.body.onmouseup = function () {
+          action.target.classList.remove("pressed")
+        }      
+      }
+
+      function getAction(event) {
+        var target = event.target
+        var action
+
+        console.log(target.className)
+
+        if (target.classList.contains("arrow")) {
+          action = {}
+          action.direction = target.parentNode.className
+          action.index = getNodeIndex(target)
+          action.target = target
+        }
+
+        return action
+      }
+    })()
+
+    displayWord("fear")
+
+    function displayWord(word) {
+      var percentage
+
+      for (var ii = 0, total = word.length; ii < total; ii += 1) {
+        percentage = (word.charCodeAt(ii) - 71) * 24
+        strips[ii].style.top = -percentage + "%"
+      }
     }
     
     //puzzle.completed(puzzle.hash)
     
     function getWordArray() {
+      // Array of all the moste common 4-letter words accessible from 
+      // "fear" + "hove" as a stepping stone from hope to love
     return ["aunt","away","back","bail","bake","ball","band","bang","bank","bare","barn","base","bass","beam","bean","bear","beat","beef","beer","bell","belt","bend","best","bike","bile","bill","bind","bird","bite","blow","boat","boil","bold","bolt","bond","bone","book","boom","boot","boss","bowl","brow","bulb","bulk","bull","burn","bury","bush","busy","cafe","cage","cake","calf","call","calm","card","care","cart","case","cash","cast","cave","cell","chap","chat","chin","chip","chop","cite","city","clay","coal","coat","code","coin","cold","come","cook","cool","cope","copy","cord","core","corn","cost","coup","crop","cure","curl","dare","dark","dash","data","date","dead","deaf","deal","dear","deck","deed","deem","deep","deer","desk","dine","disc","dish","disk","dive","dock","doll","dome","door","dose","drop","dual","duck","dull","duly","dust","duty","earl","earn","ease","east","easy","else","face","fact","fade","fail","fair","fall","fame","fare","farm","fast","fate","fear","feed","feel","file","fill","film","find","fine","fire","firm","fish","fist","flow","fold","folk","fond","food","fool","foot","fork","form","fuck","fuel","full","fund","fury","gain","gall","game","gang","gate","gaze","gear","gift","give","glow","goal","goat","gold","golf","good","grey","grid","grim","grin","grip","grow","hair","half","hall","halt","hand","hang","hard","harm","hate","haul","have","head","heal","heap","hear","heat","heel","heir","hell","help","herb","herd","here","hero","hers","hide","hill","hint","hire","hold","hole","holy","home","hook","hope","horn","host","hour","hove","hunt","hurt","item","jail","join","jury","just","keen","keep","kick","kill","kind","king","kiss","kite","knit","knot","know","lace","lack","lake","land","lane","last","late","lead","leaf","leak","lean","leap","left","lend","less","lick","life","lift","like","line","link","list","live","load","loan","lock","lone","long","look","loop","lord","lose","loss","lost","loud","love","luck","lung","maid","mail","main","make","male","mark","mask","mass","mate","meal","mean","meat","meet","melt","mere","mess","mild","mile","milk","mill","mind","mine","miss","mist","moan","mode","mole","mood","moon","moor","more","most","move","much","must","nail","name","near","neat","neck","need","nest","next","nice","node","none","norm","nose","note","pace","pack","page","paid","pain","pair","pale","palm","park","part","pass","past","peak","peer","pest","pick","pier","pile","pill","pine","pink","pint","pipe","pity","plan","play","plot","poem","poet","pole","poll","pond","pony","pool","poor","pope","port","pose","post","pour","pray","prey","prop","pull","pure","push","quid","quit","race","rack","rage","raid","rail","rain","rank","rape","rare","rate","read","real","rear","rent","rest","rice","rich","ride","ring","riot","rise","risk","road","roar","rock","role","roll","roof","room","root","rope","rose","rude","ruin","rule","rush","sack","safe","sail","sake","sale","salt","same","sand","save","scan","scar","seal","seat","seed","seek","seem","self","sell","send","shed","ship","shit","shoe","shop","shot","show","shut","sick","side","silk","sing","sink","site","size","skin","slab","slam","slap","slim","slip","slot","slow","snap","snow","soak","soap","soar","sock","sofa","soft","soil","sole","solo","some","song","soon","sore","sort","soul","soup","spin","spit","spot","stab","stag","star","stay","stem","step","stir","stop","such","suck","suit","sure","swap","sway","swim","tail","take","tale","talk","tall","tank","tape","task","team","tear","tell","tend","tent","term","test","text","than","that","them","then","they","thin","this","thus","tick","tide","tile","till","time","tire","toll","tone","tool","toss","tour","trap","tray","trip","tube","tuck","tune","turn","twin","type","unit","vary","vast","verb","very","vote","wage","wake","walk","wall","ward","warm","warn","wary","wash","wave","weak","wear","weed","week","weep","well","west","what","when","whip","wide","wife","wild","will","wind","wine","wing","wipe","wire","wise","wish","with","wolf","wood","wool","word","work","worm","wrap","yard","yarn","yeah","year","yell","your","zone"]
     }
   }
@@ -201,5 +263,18 @@ function getClientLoc(event) {
     if (typeof puzzle.map === "object") {
       var object = puzzle.map[puzzle.hash] = new Puzzle()
     }
+  }
+
+  // UTILITIES
+
+  // http://stackoverflow.com/a/11762728/1927589
+  function getNodeIndex(node) {
+    var index = 0;
+    while ( (node = node.previousSibling) ) {
+      if (node.nodeType != 3 || !/^\s*$/.test(node.data)) {
+        index++;
+      }
+    }
+    return index;
   }
 })(window.puzzle) // <HARD-CODED global object>

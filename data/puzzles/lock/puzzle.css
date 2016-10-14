@@ -62,18 +62,26 @@ p {
 
 .arrows {
   position: absolute;
+  top: 0;
   left: 2vmin;
+  width: 96vmin;
+  pointer-events: none;
 }
 
-.arrows.up {
+.arrows > div {
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrows .up {
   top: 17vmin;
 }
 
-.arrows.down {
+.arrows .down {
   top: 54.2vmin;
 }
 
-.arrows div {
+.arrows div div {
   display: inline-block;
   width: 0; 
   height: 0; 
@@ -81,15 +89,36 @@ p {
   border-right: 5vmin solid transparent;
   margin: 0 6.8vmin;
   filter: drop-shadow(8px 4px 4px rgba(255,255,255,0.75));
+  cursor: pointer;
+  pointer-events: auto;
 }
 
-.arrows.up div {
+.arrows .up div {
+  border-bottom: 8.66vmin solid #ccc;
+}
+
+.arrows .up div.hilite {
   border-bottom: 8.66vmin solid #fff;
 }
 
-.arrows.down div {
+.arrows .up div.hilite.pressed {
+  border-bottom: 8.66vmin solid #999;
+  filter: none;
+}
+
+.arrows .down div {
+  border-top: 8.66vmin solid #ccc;
+}
+
+.arrows .down div.hilite {
   border-top: 8.66vmin solid #fff;
 }
+
+.arrows .down div.hilite.pressed {
+  border-top: 8.66vmin solid #999;
+  filter: none;
+}
+
 
 .progress {
   position: absolute;
