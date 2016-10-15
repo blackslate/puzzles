@@ -21,9 +21,21 @@ h1 {
 
 /*********** REMOVE ALL CODE ABOVE THIS LINE IN PRODUCTION **********/
 
-body, html, p {
-  margin: 0;
+
+article * {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+-webkit-user-drag: none;
+-khtml-user-drag: none;
+-moz-user-drag: none;
+-ms-user-drag: none;
+user-drag: none;
 }
+
 div#viewport {
   position: absolute;
   top: 28vmin;
@@ -32,6 +44,7 @@ div#viewport {
   height: 24vmin;
   overflow: hidden;
 }
+
 div.column {
   position: relative;
   display: inline-block;
@@ -40,24 +53,41 @@ div.column {
   text-align: center;
   box-sizing: border-box;
 }
+
 div.strip {
   position: absolute;
   top: 0;
   width: 100%;
 }
-/*div.column:nth-child(even) {
-  background-color: #eee;
-}*/
 
 p {
+  margin: 0;
   font-size: 18vmin;
   font-family: monospace;
   width: 100%;
   height: 24vmin;
-  border: 5px outset #999;
+  border: 5px solid #222;
   border-radius: 20px;
   box-sizing: border-box;
-  background-color: #ccc;
+  color: #333;
+  background-color: #111;
+}
+
+p.sought {
+  background-color: #555;
+}
+
+p.possible {
+  background-color: #bbb;
+}
+
+p.possible.sought {
+  background-color: #ddd;
+}
+
+p.possible.found {
+  background-color: #fff;
+  color: #000;
 }
 
 .arrows {
@@ -108,7 +138,7 @@ p {
 }
 
 .arrows .up div.disabled {
-  border-bottom: 8.66vmin solid #333;
+  border-bottom: 8.66vmin solid #111;
   filter: none;
 }
 
@@ -126,20 +156,74 @@ p {
 }
 
 .arrows .down div.disabled {
-  border-top: 8.66vmin solid #333;
+  border-top: 8.66vmin solid #111;
   filter: none;
   pointer-events: none;
+}
+
+.arrow:last-child {
+  margin-right: 0; /*for Firefox*/
 }
 
 .progress {
   position: absolute;
   top: 80vmin;
   width: 100%;
-  background-color: #333;
+  background-color: #111;
 }
 
 .complete {
   width: 10%;
   height: 5vmin;
   background-color: #666;
+}
+
+img {
+  position: absolute;
+  top: 2vmin;
+  right: 2vmin;
+  width: 24vmin;
+  opacity: 0;
+}
+
+.found .arrows,
+.found .progress {
+  opacity: 0;
+  transition: opacity 2s;
+}
+
+.found .arrow {
+  pointer-events: none;
+  cursor: default;
+}
+
+.found img {
+  opacity: 1;
+  transition: opacity 4s 18.5s;
+}
+
+.found div#viewport p {
+  background-color: #fff;
+  color: #f90;
+  border-color: #fff;
+  transition: all 18s;
+}
+
+hr {
+  position: absolute;
+  top: 50vmin;
+  left: 10vmin;
+  width: 80vmin;
+  border: 0.3vmin solid #f90;
+  opacity: 0;
+}
+
+.found hr {
+  opacity: 1;
+  transition: opacity 0s 19.2s;
+}
+
+article.found {
+  background-color: #fff;
+  transition: background-color 18s;
 }

@@ -1,3 +1,5 @@
+"use strict"
+
 window.puzzle = {
   map: {}
 , hash: "test"
@@ -32,8 +34,17 @@ function getClientLoc(event) {
   Puzzle.prototype.initialize = function initialize() {
     var quest = "fear"
     var grail = "hope"
+    var finalSequence = [
+      ["home", 2000]
+    , ["come", 2000]
+    , ["cove", 100]
+    , ["love", 2000]
+    , ["live", 2000]
+    ]
+    var alphabetLength = 26
     var scrollDuration = 1000
     var scrollDelay = 250
+    var grailDelay = 3000
     var step = 24
     var asciiRoot = 97
 
@@ -159,7 +170,7 @@ function getClientLoc(event) {
 
           strip.classList.add("strip")
 
-          for (ii = 0; ii < 26; ii += 1){
+          for (ii = 0; ii < alphabetLength; ii += 1){
             addLetterToAlphabet(ii + asciiRoot)
           }
           addLetterToAlphabet(asciiRoot) // "xyza" for looping
@@ -185,11 +196,18 @@ function getClientLoc(event) {
       })()
     })()
 
-    ;(function activateButtons(){
+    displayWord(quest)
+    toggleButtons(true)
+
+    function toggleButtons(active){
       var arrows = document.querySelector(".arrows")
-      arrows.onmouseover = hiliteButton
-      arrows.onmouseout = loliteButton
-      arrows.onmousedown = activateButton
+      if (active) {
+        arrows.onmouseover = hiliteButton
+        arrows.onmouseout = loliteButton
+        arrows.onmousedown = activateButton
+      } else {
+        arrows.onmouseover = arrows.onmouseout = arrows.onmousedown = null
+      }
 
       function hiliteButton(event) {
         var action = getAction(event)
@@ -212,7 +230,13 @@ function getClientLoc(event) {
       function activateButton(event) {
         var action = getAction(event)
         if (action) {
+          action.target.classList.add("pressed")
+
           startScroll(action)
+
+          document.body.onmouseup = function() {
+            action.target.classList.remove("pressed")
+          }
         } 
       }
 
@@ -229,19 +253,18 @@ function getClientLoc(event) {
 
         return action
       }
-    })()
-
-    displayWord("fear")
-
-
+    }
 
     /**
      * Starts a scroll.
      *
-     * @param {object}}  action  { direction: <"up", "down">
-     *                           , index: <0-3>
-     *                           , target: div.arrow.hilite
-     *                           }
+     * @param {object}}  action { direction: <"up", "down">
+     *                          , index: <0-3>
+     *                          , target: div.arrow.hilite
+     *                          , nextIndex: <undefined | integer>
+     *                          , nextWord: <undefined | string>
+     *                          , delay: <undefined | integer ms>
+     *                          }
      */
     function startScroll(action) {      
       var strip = strips[action.index]
@@ -253,32 +276,42 @@ function getClientLoc(event) {
       var up = action.direction === "up"
       var duration = scrollDuration
       var loop = false
-      var nextIndex
-        , nextChar
-        , nextWord
+      var nextIndex = action.nextIndex
+      var nextWord = action.nextWord
+      var nextChar
         , nextTop
         , finalTop
         , finalDuration
-        , increment
-        , startTime
 
-      if (up) {
-        nextIndex = presentIndex - 1
-        if (nextIndex < 0) {
-          nextIndex = alternatives.length - 1
-          loop = true
-        }
+      if (nextIndex === undefined) {
+        if (up) {
+          nextIndex = presentIndex - 1
+          if (nextIndex < 0) {
+            nextIndex = alternatives.length - 1
+            loop = true
+          }
+        } else {
+          nextIndex = presentIndex + 1
+          if (nextIndex > lastIndex) {
+            nextIndex = 0
+            loop = true
+          }
+        } 
+
+        nextIndex = alternatives[nextIndex]
+        nextChar = String.fromCharCode(nextIndex + asciiRoot)
+        nextWord = replaceAt(current, action.index, nextChar)
+        nextTop = -nextIndex * step
+
       } else {
-        nextIndex = presentIndex + 1
-        if (nextIndex > lastIndex) {
-          nextIndex = 0
+        // find if shortest route needs to loop, and if so, does it go
+        // up or down
+        if (currentIndex > nextIndex) {
           loop = true
+          up = false
         }
       }
 
-      nextIndex = alternatives[nextIndex]
-      nextChar = String.fromCharCode(nextIndex + asciiRoot)
-      nextWord = replaceAt(current, action.index, nextChar)
       nextTop = -nextIndex * step
 
       if (loop) {
@@ -288,8 +321,10 @@ function getClientLoc(event) {
       doScroll()
 
       function doScroll() {
-        increment = (nextTop - top) / duration
-        startTime = + new Date()
+        var increment = (nextTop - top) / duration
+        var startTime = + new Date()
+
+        toggleButtons(false)
 
         ;(function scrollToNext(){
           var elapsed = + new Date() - startTime
@@ -297,34 +332,39 @@ function getClientLoc(event) {
           if (elapsed > duration) {
             if (loop) {
               completeLoop()
+
             } else {
               displayWord(nextWord)
-            }
-            
+              if (action.delay) {
+                setTimeout(goLive, action.delay)
+              } else {
+                toggleButtons(true)
+              }
+            }           
 
           } else {
             nextTop = (top + elapsed * increment)
             strip.style.top = nextTop + "%"
             setTimeout(scrollToNext, 16)
           }
-
         })()
       }
       
       function prepareLoop() {
         duration = up
-                     ? currentIndex / (currentIndex + 26 - nextIndex)
-                     : (26 - currentIndex)/
-                                      (26 - currentIndex + nextIndex)
+                 ? currentIndex /
+                      (currentIndex + alphabetLength - nextIndex)
+                 : (alphabetLength - currentIndex)/
+                      (alphabetLength - currentIndex + nextIndex)
         duration *= scrollDuration
         finalDuration = scrollDuration - duration
 
         finalTop = nextTop
-        nextTop = up ? 0 : -26 * step
+        nextTop = up ? 0 : -alphabetLength * step
       }
 
       function completeLoop() {
-        top = up ? -26 * step : 0
+        top = up ? -alphabetLength * step : 0
         nextTop = finalTop
         duration = finalDuration
         loop = false
@@ -334,15 +374,13 @@ function getClientLoc(event) {
 
     function displayWord(word) {
       var derivatives = changes[word]
-      var charCode
       var index
       var alternatives
       var percentage
 
       for (var ii = 0, total = word.length; ii < total; ii += 1) {
         // indexArray
-        charCode = word.charCodeAt(ii) // "a" = 97
-        index = charCode - asciiRoot // "a" = 0
+        index = getCharIndex(word, ii)
         indexArray[ii] = index
 
         // alternatives
@@ -357,6 +395,44 @@ function getClientLoc(event) {
 
       setProgress(derivatives)
       current = word
+
+      if (word === grail) {
+        showOver()
+      }
+
+      ;(function setPossibles() {
+        var total = word.length
+        var count = alphabetLength + 1
+        var ii
+          , indexArray
+          , index
+          , letters
+          , modify
+        
+        for (ii = 0; ii < total; ii += 1) {
+          indexArray = [getCharIndex(word, ii)]
+          letters = strips[ii].children
+
+          derivatives.forEach(function addToIndexArray(word) {
+            index = getCharIndex(word, ii)
+            if (indexArray.indexOf(index) < 0) {
+              indexArray.push(index)
+              if (!index) {
+                // Exception for second a
+                indexArray.push(alphabetLength)
+              }
+            }
+          })
+
+          
+          for (var jj = 0; jj < count; jj += 1) {
+            modify = (indexArray.indexOf(jj) < 0)
+                   ? "remove"
+                   : "add"
+            letters[jj].classList[modify]("possible")
+          }
+        }
+      })()
 
       function getAlternatives(charPos) {
         var alternatives = [index]
@@ -380,6 +456,10 @@ function getClientLoc(event) {
       }
     }
 
+    function getCharIndex(word, ii){
+      return word.charCodeAt(ii) - asciiRoot
+    }
+
     function setButtonState(index, state) {
       var modify = state ? "remove" : "add"
       up[index].classList[modify]("disabled")
@@ -392,13 +472,47 @@ function getClientLoc(event) {
       var ratio = completed * 100 / (completed + remaining)
       complete.style.width = ratio + "%"
     }
+
+    function showOver() {
+      document.querySelector("article").classList.add("found")
+      setTimeout(goLive, grailDelay)
+      scrollDuration *= 2
+    }
+
+    function goLive(){
+      var nextWord = finalSequence.shift()
+      if (!nextWord) {
+        return console.log("Done")
+      }
+
+      var delay = nextWord[1]
+      nextWord = nextWord[0]
+
+      var total = current.length
+      var action = {}
+      var ii
+        , nextIndex
+      
+      for (ii = 0; ii < total; ii += 1) {
+        nextIndex = getCharIndex(nextWord, ii)
+        if (nextIndex !== getCharIndex(current, ii)) {
+          action.index = ii
+          action.nextIndex = nextIndex
+          action.nextWord = nextWord
+          action.delay = delay
+          startScroll(action)
+          break
+        }
+      }
+    }
     
     //puzzle.completed(puzzle.hash)
     
     function getWordArray() {
-      // Array of all the moste common 4-letter words accessible from 
-      // "fear" + "hove" as a stepping stone from hope to love
-    return ["aunt","away","back","bail","bake","ball","band","bang","bank","bare","barn","base","bass","beam","bean","bear","beat","beef","beer","bell","belt","bend","best","bike","bile","bill","bind","bird","bite","blow","boat","boil","bold","bolt","bond","bone","book","boom","boot","boss","bowl","brow","bulb","bulk","bull","burn","bury","bush","busy","cafe","cage","cake","calf","call","calm","card","care","cart","case","cash","cast","cave","cell","chap","chat","chin","chip","chop","cite","city","clay","coal","coat","code","coin","cold","come","cook","cool","cope","copy","cord","core","corn","cost","coup","crop","cure","curl","dare","dark","dash","data","date","dead","deaf","deal","dear","deck","deed","deem","deep","deer","desk","dine","disc","dish","disk","dive","dock","doll","dome","door","dose","drop","dual","duck","dull","duly","dust","duty","earl","earn","ease","east","easy","else","face","fact","fade","fail","fair","fall","fame","fare","farm","fast","fate","fear","feed","feel","file","fill","film","find","fine","fire","firm","fish","fist","flow","fold","folk","fond","food","fool","foot","fork","form","fuck","fuel","full","fund","fury","gain","gall","game","gang","gate","gaze","gear","gift","give","glow","goal","goat","gold","golf","good","grey","grid","grim","grin","grip","grow","hair","half","hall","halt","hand","hang","hard","harm","hate","haul","have","head","heal","heap","hear","heat","heel","heir","hell","help","herb","herd","here","hero","hers","hide","hill","hint","hire","hold","hole","holy","home","hook","hope","horn","host","hour","hove","hunt","hurt","item","jail","join","jury","just","keen","keep","kick","kill","kind","king","kiss","kite","knit","knot","know","lace","lack","lake","land","lane","last","late","lead","leaf","leak","lean","leap","left","lend","less","lick","life","lift","like","line","link","list","live","load","loan","lock","lone","long","look","loop","lord","lose","loss","lost","loud","love","luck","lung","maid","mail","main","make","male","mark","mask","mass","mate","meal","mean","meat","meet","melt","mere","mess","mild","mile","milk","mill","mind","mine","miss","mist","moan","mode","mole","mood","moon","moor","more","most","move","much","must","nail","name","near","neat","neck","need","nest","next","nice","node","none","norm","nose","note","pace","pack","page","paid","pain","pair","pale","palm","park","part","pass","past","peak","peer","pest","pick","pier","pile","pill","pine","pink","pint","pipe","pity","plan","play","plot","poem","poet","pole","poll","pond","pony","pool","poor","pope","port","pose","post","pour","pray","prey","prop","pull","pure","push","quid","quit","race","rack","rage","raid","rail","rain","rank","rape","rare","rate","read","real","rear","rent","rest","rice","rich","ride","ring","riot","rise","risk","road","roar","rock","role","roll","roof","room","root","rope","rose","rude","ruin","rule","rush","sack","safe","sail","sake","sale","salt","same","sand","save","scan","scar","seal","seat","seed","seek","seem","self","sell","send","shed","ship","shit","shoe","shop","shot","show","shut","sick","side","silk","sing","sink","site","size","skin","slab","slam","slap","slim","slip","slot","slow","snap","snow","soak","soap","soar","sock","sofa","soft","soil","sole","solo","some","song","soon","sore","sort","soul","soup","spin","spit","spot","stab","stag","star","stay","stem","step","stir","stop","such","suck","suit","sure","swap","sway","swim","tail","take","tale","talk","tall","tank","tape","task","team","tear","tell","tend","tent","term","test","text","than","that","them","then","they","thin","this","thus","tick","tide","tile","till","time","tire","toll","tone","tool","toss","tour","trap","tray","trip","tube","tuck","tune","turn","twin","type","unit","vary","vast","verb","very","vote","wage","wake","walk","wall","ward","warm","warn","wary","wash","wave","weak","wear","weed","week","weep","well","west","what","when","whip","wide","wife","wild","will","wind","wine","wing","wipe","wire","wise","wish","with","wolf","wood","wool","word","work","worm","wrap","yard","yarn","yeah","year","yell","your","zone"]
+      // Array of all the most common 4-letter words accessible from 
+      // "fear" + "cove" - "dome" - "code", as a stepping stone from
+      // hope to love
+    return ["aunt","away","back","bail","bake","ball","band","bang","bank","bare","barn","base","bass","beam","bean","bear","beat","beef","beer","bell","belt","bend","best","bike","bile","bill","bind","bird","bite","blow","boat","boil","bold","bolt","bond","bone","book","boom","boot","boss","bowl","brow","bulb","bulk","bull","burn","bury","bush","busy","cafe","cage","cake","calf","call","calm","cape","card","care","cart","case","cash","cast","cave","cell","chap","chat","chin","chip","chop","cite","city","clay","coal","coat","coin","cold","come","cove","cook","cool","cope","copy","cord","core","corn","cost","coup","crop","cure","curl","dare","dark","dash","data","date","dead","deaf","deal","dear","deck","deed","deem","deep","deer","desk","dine","disc","dish","disk","dive","dock","doll","door","dose","drop","dual","duck","dull","duly","dust","duty","earl","earn","ease","east","easy","else","face","fact","fade","fail","fair","fall","fame","fare","farm","fast","fate","fear","feed","feel","file","fill","film","find","fine","fire","firm","fish","fist","flow","fold","folk","fond","food","fool","foot","fork","form","fuck","fuel","full","fund","fury","gain","gall","game","gang","gate","gaze","gear","gift","give","glow","goal","goat","gold","golf","good","grey","grid","grim","grin","grip","grow","hair","half","hall","halt","hand","hang","hard","harm","hate","haul","have","head","heal","heap","hear","heat","heel","heir","hell","help","herb","herd","here","hero","hers","hide","hill","hint","hire","hold","hole","holy","home","hook","hope","horn","host","hour","hunt","hurt","item","jail","join","jury","just","keen","keep","kick","kill","kind","king","kiss","kite","knit","knot","know","lace","lack","lake","land","lane","last","late","lead","leaf","leak","lean","leap","left","lend","less","lick","life","lift","like","line","link","list","live","load","loan","lock","lone","long","look","loop","lord","lose","loss","lost","loud","love","luck","lung","maid","mail","main","make","male","mark","mask","mass","mate","meal","mean","meat","meet","melt","mere","mess","mild","mile","milk","mill","mind","mine","miss","mist","moan","mode","mole","mood","moon","moor","more","most","move","much","must","nail","name","near","neat","neck","need","nest","next","nice","node","none","norm","nose","note","pace","pack","page","paid","pain","pair","pale","palm","park","part","pass","past","peak","peer","pest","pick","pier","pile","pill","pine","pink","pint","pipe","pity","plan","play","plot","poem","poet","pole","poll","pond","pony","pool","poor","pope","port","pose","post","pour","pray","prey","prop","pull","pure","push","quid","quit","race","rack","rage","raid","rail","rain","rank","rare","rate","read","real","rear","rent","rest","rice","rich","ride","ring","riot","rise","risk","road","roar","rock","role","roll","roof","room","root","rope","rose","rude","ruin","rule","rush","sack","safe","sail","sake","sale","salt","same","sand","save","scan","scar","seal","seat","seed","seek","seem","self","sell","send","shed","ship","shit","shoe","shop","shot","show","shut","sick","side","silk","sing","sink","site","size","skin","slab","slam","slap","slim","slip","slot","slow","snap","snow","soak","soap","soar","sock","sofa","soft","soil","sole","solo","some","song","soon","sore","sort","soul","soup","spin","spit","spot","stab","stag","star","stay","stem","step","stir","stop","such","suck","suit","sure","swap","sway","swim","tail","take","tale","talk","tall","tank","tape","task","team","tear","tell","tend","tent","term","test","text","than","that","them","then","they","thin","this","thus","tick","tide","tile","till","time","tire","toll","tone","tool","toss","tour","trap","tray","trip","tube","tuck","tune","turn","twin","type","unit","vary","vast","verb","very","vote","wage","wake","walk","wall","ward","warm","warn","wary","wash","wave","weak","wear","weed","week","weep","well","west","what","when","whip","wide","wife","wild","will","wind","wine","wing","wipe","wire","wise","wish","with","wolf","wood","wool","word","work","worm","wrap","yard","yarn","yeah","year","yell","your","zone"]
     }
   }
 
