@@ -30,12 +30,15 @@ function getClientLoc(event) {
   }
 
   Puzzle.prototype.initialize = function initialize() {
-    var changes = {}
     var quest = "fear"
     var grail = "hope"
+    var scrollDuration = 1000
     var scrollDelay = 250
     var step = 24
     var asciiRoot = 97
+    var complete = document.querySelector(".complete")
+
+    var changes = {}
     var strips = []
     var indexArray = []
     var possibleArray = []
@@ -95,6 +98,7 @@ function getClientLoc(event) {
         nextWords[start] = 0
 
         words = Object.keys(changes)
+        words.splice(words.indexOf(start), 1)
         queue = [nextWords]
 
         while (queue.length) {
@@ -242,13 +246,20 @@ function getClientLoc(event) {
       var alternatives = possibleArray[action.index]
       var presentIndex = alternatives.indexOf(currentIndex)
       var lastIndex = alternatives.length - 1
+      var top = -alternatives[presentIndex] * step
+      var up = action.direction === "up"
+      var duration = scrollDuration
       var loop = false
       var nextIndex
-        , top
-        , newChar
-        , newWord
+        , nextChar
+        , nextWord
+        , nextTop
+        , finalTop
+        , finalDuration
+        , increment
+        , startTime
 
-      if (action.direction === "up") {
+      if (up) {
         nextIndex = presentIndex - 1
         if (nextIndex < 0) {
           nextIndex = alternatives.length - 1
@@ -261,43 +272,68 @@ function getClientLoc(event) {
           loop = true
         }
       }
+
       nextIndex = alternatives[nextIndex]
-      top = -nextIndex * step
-      strip.style.top = top + "%"
+      nextChar = String.fromCharCode(nextIndex + asciiRoot)
+      nextWord = replaceAt(current, action.index, nextChar)
+      nextTop = -nextIndex * step
 
+      if (loop) {
+        prepareLoop()
+      }
 
+      doScroll()
 
-      newChar = String.fromCharCode(nextIndex + asciiRoot)
-      newWord = replaceAt(current, action.index, newChar)
-      displayWord(newWord)
+      function doScroll() {
+        increment = (nextTop - top) / duration
+        startTime = + new Date()
 
+        ;(function scrollToNext(){
+          var elapsed = + new Date() - startTime
 
-      // var scrolling = true
-      // var strip = strips[action.index]
-      // var top = parseInt(strip.style.top, 10)
-      // var increment = action.direction === "up" ? 24 : -24
+          if (elapsed > duration) {
+            if (loop) {
+              completeLoop()
+            } else {
+              displayWord(nextWord)
+            }
+            
 
-      // action.target.classList.add("pressed")
-      // document.body.onmouseup = function () {
-      //   action.target.classList.remove("pressed")
-      //   scrolling = false
-      // }
+          } else {
+            nextTop = (top + elapsed * increment)
+            strip.style.top = nextTop + "%"
+            setTimeout(scrollToNext, 16)
+          }
 
-      // ;(function scroll(){
-      //   top += increment
+        })()
+      }
+      
+      function prepareLoop() {
+        duration = up
+                     ? currentIndex / (currentIndex + 26 - nextIndex)
+                     : (26 - currentIndex)/
+                                      (26 - currentIndex + nextIndex)
+        duration *= scrollDuration
+        finalDuration = scrollDuration - duration
 
-      //   strip.style.top = top + "%"
+        finalTop = nextTop
+        nextTop = up ? 0 : -26 * step
+      }
 
-      //   if (scrolling) {
-      //     setTimeout(scroll, scrollDelay)
-      //   }
-      // })()
+      function completeLoop() {
+        top = up ? -26 * step : 0
+        nextTop = finalTop
+        duration = finalDuration
+        loop = false
+        doScroll()
+      }
     }
 
     function displayWord(word) {
       var derivatives = changes[word]
       var charCode
       var index
+      var alternatives
       var percentage
 
       for (var ii = 0, total = word.length; ii < total; ii += 1) {
@@ -307,17 +343,17 @@ function getClientLoc(event) {
         indexArray[ii] = index
 
         // alternatives
-        possibleArray[ii] = getAlternatives(ii)
+        alternatives = getAlternatives(ii)
+        possibleArray[ii] = alternatives
+        setButtonState(ii, alternatives.length > 1)
 
         // position
         percentage = index * step
         strips[ii].style.top = -percentage + "%"
       }
 
-     current = word
-
-      console.log(indexArray)
-      console.log(possibleArray)
+      setProgress(derivatives)
+      current = word
 
       function getAlternatives(charPos) {
         var alternatives = [index]
@@ -339,6 +375,17 @@ function getClientLoc(event) {
           return a - b
         }
       }
+    }
+
+    function setButtonState(index, state) {
+
+    }
+
+    function setProgress(derivatives) {
+      var completed = derivatives[quest]
+      var remaining = derivatives[grail]
+      var ratio = completed * 100 / (completed + remaining)
+      complete.style.width = ratio + "%"
     }
     
     //puzzle.completed(puzzle.hash)
@@ -373,6 +420,7 @@ function getClientLoc(event) {
     return index;
   }
 
+  // http://stackoverflow.com/a/1431113/1927589
   function replaceAt(string, index, replacement) {
     return string.substring(0, index) 
          + replacement
