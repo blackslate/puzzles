@@ -104,6 +104,7 @@ p {
 .arrows .up div.hilite.pressed {
   border-bottom: 8.66vmin solid #999;
   filter: none;
+  pointer-events: none;
 }
 
 .arrows .up div.disabled {
@@ -124,12 +125,11 @@ p {
   filter: none;
 }
 
-
 .arrows .down div.disabled {
   border-top: 8.66vmin solid #333;
   filter: none;
+  pointer-events: none;
 }
-
 
 .progress {
   position: absolute;

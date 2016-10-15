@@ -36,6 +36,9 @@ function getClientLoc(event) {
     var scrollDelay = 250
     var step = 24
     var asciiRoot = 97
+
+    var up = [].slice.call(document.querySelectorAll(".up .arrow"))
+    var down = [].slice.call(document.querySelectorAll(".down .arrow"))
     var complete = document.querySelector(".complete")
 
     var changes = {}
@@ -378,7 +381,9 @@ function getClientLoc(event) {
     }
 
     function setButtonState(index, state) {
-
+      var modify = state ? "remove" : "add"
+      up[index].classList[modify]("disabled")
+      down[index].classList[modify]("disabled")
     }
 
     function setProgress(derivatives) {
