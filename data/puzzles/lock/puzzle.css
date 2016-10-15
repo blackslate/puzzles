@@ -64,7 +64,7 @@ p {
   position: absolute;
   top: 0;
   left: 2vmin;
-  width: 96vmin;
+  width: 98vmin;
   pointer-events: none;
 }
 
@@ -78,7 +78,7 @@ p {
 }
 
 .arrows .down {
-  top: 54.2vmin;
+  top: 54vmin;
 }
 
 .arrows div div {

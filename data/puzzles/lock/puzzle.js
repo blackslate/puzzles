@@ -33,7 +33,13 @@ function getClientLoc(event) {
     var changes = {}
     var quest = "fear"
     var grail = "hope"
+    var scrollDelay = 250
+    var step = 24
+    var asciiRoot = 97
     var strips = []
+    var indexArray = []
+    var possibleArray = []
+    var current // = quest
 
     ;(function createChangesMap(){
       var words = getWordArray()
@@ -53,8 +59,6 @@ function getClientLoc(event) {
    
       erdos(changes, grail)
       erdos(changes, quest)
-
-      console.log(changes[Object.keys(changes)[Math.floor(Math.random() * 568)]])
 
       function findChanges(word) {
         var diff = 0
@@ -148,19 +152,11 @@ function getClientLoc(event) {
 
           strip.classList.add("strip")
 
-          for (ii = 0; ii < 3; ii += 1) {
-            addAlphabetToStrip()
+          for (ii = 0; ii < 26; ii += 1){
+            addLetterToAlphabet(ii + asciiRoot)
           }
-
+          addLetterToAlphabet(asciiRoot) // "xyza" for looping
           return strip
-
-          function addAlphabetToStrip() {
-            var ii
-
-            for (ii = 0; ii < 26; ii += 1){
-              addLetterToAlphabet(ii + 97)
-            }
-          }
 
           function addLetterToAlphabet(charCode) {
             var container = p.cloneNode()
@@ -208,21 +204,14 @@ function getClientLoc(event) {
 
       function activateButton(event) {
         var action = getAction(event)
-        if (!action) {
-          return
-        }
-        
-        action.target.classList.add("pressed")
-        document.body.onmouseup = function () {
-          action.target.classList.remove("pressed")
-        }      
+        if (action) {
+          startScroll(action)
+        } 
       }
 
       function getAction(event) {
         var target = event.target
         var action
-
-        console.log(target.className)
 
         if (target.classList.contains("arrow")) {
           action = {}
@@ -237,12 +226,118 @@ function getClientLoc(event) {
 
     displayWord("fear")
 
+
+
+    /**
+     * Starts a scroll.
+     *
+     * @param {object}}  action  { direction: <"up", "down">
+     *                           , index: <0-3>
+     *                           , target: div.arrow.hilite
+     *                           }
+     */
+    function startScroll(action) {      
+      var strip = strips[action.index]
+      var currentIndex = indexArray[action.index]
+      var alternatives = possibleArray[action.index]
+      var presentIndex = alternatives.indexOf(currentIndex)
+      var lastIndex = alternatives.length - 1
+      var loop = false
+      var nextIndex
+        , top
+        , newChar
+        , newWord
+
+      if (action.direction === "up") {
+        nextIndex = presentIndex - 1
+        if (nextIndex < 0) {
+          nextIndex = alternatives.length - 1
+          loop = true
+        }
+      } else {
+        nextIndex = presentIndex + 1
+        if (nextIndex > lastIndex) {
+          nextIndex = 0
+          loop = true
+        }
+      }
+      nextIndex = alternatives[nextIndex]
+      top = -nextIndex * step
+      strip.style.top = top + "%"
+
+
+
+      newChar = String.fromCharCode(nextIndex + asciiRoot)
+      newWord = replaceAt(current, action.index, newChar)
+      displayWord(newWord)
+
+
+      // var scrolling = true
+      // var strip = strips[action.index]
+      // var top = parseInt(strip.style.top, 10)
+      // var increment = action.direction === "up" ? 24 : -24
+
+      // action.target.classList.add("pressed")
+      // document.body.onmouseup = function () {
+      //   action.target.classList.remove("pressed")
+      //   scrolling = false
+      // }
+
+      // ;(function scroll(){
+      //   top += increment
+
+      //   strip.style.top = top + "%"
+
+      //   if (scrolling) {
+      //     setTimeout(scroll, scrollDelay)
+      //   }
+      // })()
+    }
+
     function displayWord(word) {
+      var derivatives = changes[word]
+      var charCode
+      var index
       var percentage
 
       for (var ii = 0, total = word.length; ii < total; ii += 1) {
-        percentage = (word.charCodeAt(ii) - 71) * 24
+        // indexArray
+        charCode = word.charCodeAt(ii) // "a" = 97
+        index = charCode - asciiRoot // "a" = 0
+        indexArray[ii] = index
+
+        // alternatives
+        possibleArray[ii] = getAlternatives(ii)
+
+        // position
+        percentage = index * step
         strips[ii].style.top = -percentage + "%"
+      }
+
+     current = word
+
+      console.log(indexArray)
+      console.log(possibleArray)
+
+      function getAlternatives(charPos) {
+        var alternatives = [index]
+        var code
+
+        for (var ii=0, total=derivatives.length; ii<total; ii += 1) {
+          code = derivatives[ii].charCodeAt(charPos) - asciiRoot
+
+          if (alternatives.indexOf(code) < 0) {
+            alternatives.push(code)
+          }
+        }
+
+        alternatives.sort(numeric)
+
+        return alternatives
+
+        function numeric(a, b) {
+          return a - b
+        }
       }
     }
     
@@ -277,4 +372,11 @@ function getClientLoc(event) {
     }
     return index;
   }
+
+  function replaceAt(string, index, replacement) {
+    return string.substring(0, index) 
+         + replacement
+         + string.substring(index + replacement.length);
+  }
+
 })(window.puzzle) // <HARD-CODED global object>
