@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  background-color: #000;
+}
+article {
+  position: absolute;
+  box-sizing: border-box;
+  top: calc(50vh - 50vmin);
+  left: calc(50vw - 50vmin);
+  width: 100vmin;
+  height: 100vmin;
+  background-color: #200;
+  border: 1px solid #600;
+}
+h1 {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 30vmin;
+  color: #300;
+}
+
+/*********** REMOVE ALL CODE ABOVE THIS LINE IN PRODUCTION **********/

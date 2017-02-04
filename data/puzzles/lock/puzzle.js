@@ -1,30 +1,3 @@
-"use strict"
-
-window.puzzle = {
-  map: {}
-, hash: "test"
-, completed: function () { console.log("Puzzle completed") }
-}
-
-setTimeout(function () {
-  window.puzzle.map.test.initialize()
-}, 0)
-
-function getClientLoc(event) {
-  var clientLoc = {}
-  if (isNaN(event.clientX)) {          
-    clientLoc.x = event.targetTouches[0].clientX
-    clientLoc.y = event.targetTouches[0].clientY
-  } else {          
-    clientLoc.x = event.clientX
-    clientLoc.y = event.clientY
-  }
-
-  return clientLoc
-}
-
-/*********** REMOVE ALL CODE ABOVE THIS LINE IN PRODUCTION **********/
-
 ;(function puzzleLoaded(puzzle){
 
   function Puzzle() {
@@ -48,8 +21,8 @@ function getClientLoc(event) {
     var step = 24
     var asciiRoot = 97
 
-    var up = [].slice.call(document.querySelectorAll(".up .arrow"))
-    var down = [].slice.call(document.querySelectorAll(".down .arrow"))
+    var up = [].slice.call(document.querySelectorAll(".up svg"))
+    var down = [].slice.call(document.querySelectorAll(".down svg"))
     var complete = document.querySelector(".complete")
 
     var changes = {}
@@ -202,31 +175,11 @@ function getClientLoc(event) {
     function toggleButtons(active){
       var arrows = document.querySelector(".arrows")
       if (active) {
-        arrows.onmouseover = hiliteButton
-        arrows.onmouseout = loliteButton
-        arrows.onmousedown = activateButton
+        arrows.onmousedown = arrows.ontouchstart = activateButton
       } else {
-        arrows.onmouseover = arrows.onmouseout = arrows.onmousedown = null
+        arrows.onmousedown = arrows.ontouchstart = null
       }
-
-      function hiliteButton(event) {
-        var action = getAction(event)
-        if (!action) {
-          return
-        }
-        
-        action.target.classList.add("hilite")
-      }
-
-      function loliteButton(event) {
-        var action = getAction(event)
-        if (!action) {
-          return
-        }
-        
-        action.target.classList.remove("hilite")
-      }
-
+      
       function activateButton(event) {
         var action = getAction(event)
         if (action) {
@@ -244,7 +197,8 @@ function getClientLoc(event) {
         var target = event.target
         var action
 
-        if (target.classList.contains("arrow")) {
+        if (target.tagName.toLowerCase() === "use") {
+          target = target.parentNode
           action = {}
           action.direction = target.parentNode.className
           action.index = getNodeIndex(target)
