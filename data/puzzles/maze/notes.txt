@@ -1,0 +1,10 @@
+Place pieces round the edge
+* random position
+* random rotation * 60°
+
+Drag piece and drop it
+* Rotate piece under magnetism
+* Snap to position
+
+Detect when puzzle is completed
+Add final picture
