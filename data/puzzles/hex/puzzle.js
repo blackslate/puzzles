@@ -123,7 +123,7 @@ function getClientLoc(event) {
         function createHex(loc) {
           var canvas = document.createElement("canvas")
           var context = canvas.getContext("2d")
-          var left = loc[0] * unit
+          var left = loc[0] * unit - hexWidth / 2
           var top = loc[1] * unit
           var image
 
@@ -141,10 +141,12 @@ function getClientLoc(event) {
           context.clip()
           context.drawImage(
             img
+          // source
           , left
           , top
           , hexWidth
           , unit * 4
+          // destination
           , 0
           , 0
           , hexWidth
@@ -161,68 +163,11 @@ function getClientLoc(event) {
 
       }())
 
-      // var context = canvas.getContext("2d")
-      // context.beginPath()
-      // context.moveTo(hexWidth / 2, 0)
-      // context.lineTo(hexWidth, unit)
-      // context.lineTo(hexWidth, unit * 3)
-      // context.lineTo(hexWidth / 2, unit * 4)
-      // context.lineTo(0, unit * 3)
-      // context.lineTo(0, unit * 1)
-      // context.closePath()
-      // context.globalCompositeOperation = 'destination-out';
-      // context.clip()
-      // context.drawImage(img, -trim, -trim)
-      //
-    source = canvas.toDataURL()
+      source = canvas.toDataURL()
 
-    img.src = source
-    img.onload = null
-  }
-    //
-    // img.onload = function cookieCutter() {
-    //   var unit = img.width / 16
-    //   var hexWidth = unit * width
-    //
-    //   canvas.width = unit * width
-    //   canvas.height = unit * 4
-    //
-    //   var context = canvas.getContext("2d")
-    //   context.beginPath()
-    //   context.moveTo(hexWidth / 2, 0)
-    //   context.lineTo(hexWidth, unit)
-    //   context.lineTo(hexWidth, unit * 3)
-    //   context.lineTo(hexWidth / 2, unit * 4)
-    //   context.lineTo(0, unit * 3)
-    //   context.lineTo(0, unit * 1)
-    //   context.closePath()
-    //   context.clip()
-    //   context.drawImage(img, -trim, -trim)
-    //
-    //   source = canvas.toDataURL()
-    //
-    //   img.src = source
-    //   img.onload = null
-    // }
-
-    // img.onload = function cookieCutter() {
-    //   var width = img.width
-    //   canvas.width = width
-    //   canvas.height = img.height
-    //   var trim = 2
-    //   var radius = width / 2 - trim
-    //
-    //   context = canvas.getContext("2d")
-    //   context.beginPath()
-    //   context.arc(radius,radius, radius,0,2*Math.PI);
-    //   context.clip()
-    //   context.drawImage(img, -trim, -trim)
-    //
-    //   source = canvas.toDataURL()
-    //
-    //   img.src = source
-    //   img.onload = null
-    // }
+      img.src = source
+      img.onload = null
+    }
 
     img.src = "img/image.jpg"
     //img.src = "data/puzzles/hex/img/image.jpg"
