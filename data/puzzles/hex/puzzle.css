@@ -21,3 +21,11 @@ h1 {
 }
 
 /*********** REMOVE ALL CODE ABOVE THIS LINE IN PRODUCTION **********/
+
+article img {
+  height: 25%;
+}
+
+article img:first-child {
+  height: 100%;
+}

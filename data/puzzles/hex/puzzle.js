@@ -36,8 +36,6 @@ function getClientLoc(event) {
     // Code goes here
     var article = document.querySelector("article")
     var canvas = document.createElement("canvas")
-    var context = canvas.getContext("2d")
-
     var img = document.createElement("img")
     var sqrt3 = Math.sqrt(3)
     var width = sqrt3 * 2
@@ -49,17 +47,22 @@ function getClientLoc(event) {
     ,                           [8, 12]
     ]
     var hexPieces = []
+    var steps = 16
     var imgSize
       , unit
+      , ratio
       , hexWidth
-      , source
+      , xAdjust
 
     img.onload = function cookieCutter() {
       imgSize = img.width
-      unit = imgSize / 16
+      unit = imgSize / steps
+      ratio = 2 / steps // %
       hexWidth = unit * width
+      xAdjust = hexWidth / 2
 
       ;(function createPolygonHole() {
+        var context = canvas.getContext("2d")
         canvas.width = imgSize
         canvas.height = imgSize
 
@@ -123,7 +126,7 @@ function getClientLoc(event) {
         function createHex(loc) {
           var canvas = document.createElement("canvas")
           var context = canvas.getContext("2d")
-          var left = loc[0] * unit - hexWidth / 2
+          var left = loc[0] * unit - xAdjust
           var top = loc[1] * unit
           var image
 
@@ -131,10 +134,10 @@ function getClientLoc(event) {
           canvas.height = unit * 4
 
           context.beginPath()
-          context.moveTo(hexWidth / 2, 0)
+          context.moveTo(xAdjust, 0)
           context.lineTo(hexWidth, unit)
           context.lineTo(hexWidth, unit * 3)
-          context.lineTo(hexWidth / 2, unit * 4)
+          context.lineTo(xAdjust, unit * 4)
           context.lineTo(0, unit * 3)
           context.lineTo(0, unit * 1)
           context.closePath()
@@ -157,22 +160,26 @@ function getClientLoc(event) {
           image.src = canvas.toDataURL()
 
           article.appendChild(image)
+          placeImage(image, left, top)
 
           hexPieces.push(image)
-        }
 
+          function placeImage(image, left, top) {
+            image.style.position = "absolute"
+            image.style.left = left / imgSize * 100 + "%"
+            image.style.top = top / imgSize * 100 + "%"
+          }
+        }
       }())
 
-      source = canvas.toDataURL()
+      img.src = canvas.toDataURL()
+      article.replaceChild(img, article.children[0])
 
-      img.src = source
       img.onload = null
     }
 
     img.src = "img/image.jpg"
     //img.src = "data/puzzles/hex/img/image.jpg"
-
-    article.replaceChild(img, article.children[0])
 
     puzzle.completed(puzzle.hash)
   }
