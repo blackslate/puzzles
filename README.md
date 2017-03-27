@@ -2,7 +2,7 @@
 
 This repository holds a showcase web site for a set of puzzles.
 
-See http://lexogram.com/puzzles/
+See http://puzzle.lexogram.com/
 
 Features:
 
