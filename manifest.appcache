@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# 20160229-1325
+# 20170711-1216
 
 CACHE:
 index.html
@@ -38,6 +38,15 @@ data/puzzles/fractal/icon.png
 data/puzzles/fractal/puzzle.css
 data/puzzles/fractal/puzzle.html
 data/puzzles/fractal/puzzle.js
+
+data/puzzles/lock/icon.png
+data/puzzles/lock/puzzle.css
+data/puzzles/lock/puzzle.html
+data/puzzles/lock/puzzle.js
+data/puzzles/lock/viewport-units-buggyfill.hacks.js
+data/puzzles/lock/viewport-units-buggyfill.js
+data/puzzles/lock/vmin.css
+/data/puzzles/lock/img/kestrel.png
 
 data/puzzles/dials/icon.png
 data/puzzles/dials/puzzle.css
