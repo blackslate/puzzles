@@ -68,7 +68,8 @@
         var rect = article.getBoundingClientRect()
         var width = rect.width
         a.style.fontSize = (width * 0.098) + "px"
-        div.style.fontSize = (width * 0.0565) + "px"
+        // div.style.fontSize = (width * 0.0565) + "px"
+        div.style.fontSize = (width * 0.0497) + "px"
       }
 
       windowResized()
